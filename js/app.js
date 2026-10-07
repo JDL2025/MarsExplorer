@@ -31,10 +31,13 @@
     lander:     { label: "Lander",             color: "#f4f4f4", group: "missions",  list: "Landers", dark: true },
     orbiter:    { label: "Orbiter",            color: "#b7c3d6", group: "space",     list: "Orbiters", dark: true },
     moon:       { label: "Moon",               color: "#9aa4b2", group: "space",     list: "Moons", dark: true },
+    future:     { label: "Possible human landing site", color: "#ff9de2", group: "future", list: "Possible human landing sites", dark: true },
     photo:      { label: "Photo spot",         color: "#ffffff", group: "paths", dark: true },
     find:       { label: "Discovery",          color: "#ffd23e", group: "paths", dark: true }
   };
-  const LIST_ORDER = ["volcano", "canyon", "channel", "crater", "basin", "ice", "region", "rover", "lander", "orbiter", "moon"];
+  const LIST_ORDER = ["volcano", "canyon", "channel", "crater", "basin", "ice", "region", "rover", "lander", "future", "orbiter", "moon"];
+  const LANDFORM_TYPES = ["volcano", "canyon", "channel", "crater", "basin", "ice", "region"];
+  const LANDFORM_LABELS = { volcano: "Volcanoes", canyon: "Canyons", channel: "River channels & valleys", crater: "Craters", basin: "Basins & plains", ice: "Ice & polar caps", region: "Other famous places" };
 
   const GLYPH = {
     volcano: '<path d="M3 19.5 9.3 9h5.4L21 19.5z" fill="G"/><path d="M10.5 9c.3-1.6-.6-2.4.4-3.8M13.5 9c.2-1.4 1.2-2 .6-3.6" stroke="G" stroke-width="1.6" fill="none" stroke-linecap="round"/>',
@@ -50,7 +53,8 @@
     orbiter: '<rect x="9.5" y="9.5" width="5" height="5" fill="G"/><path d="M2.5 9.5h5v5h-5zM16.5 9.5h5v5h-5z" fill="none" stroke="G" stroke-width="1.6"/><path d="M7.5 12h2M14.5 12h2M12 9.5V6" stroke="G" stroke-width="1.6"/><circle cx="12" cy="5" r="1.4" fill="G"/>',
     moon: '<circle cx="12" cy="12" r="7.5" fill="G"/><circle cx="9.5" cy="10" r="1.8" fill="B"/><circle cx="14.5" cy="14" r="1.3" fill="B"/><circle cx="13.5" cy="8.6" r="1" fill="B"/>',
     photo: '<path d="M4 8.5h3.5L9 6.5h6l1.5 2H20v10H4z" fill="G"/><circle cx="12" cy="13.2" r="3.2" fill="B"/><circle cx="12" cy="13.2" r="1.7" fill="G"/>',
-    find: '<path d="M12 3.2l2.6 5.6 6.1.7-4.5 4.1 1.2 6-5.4-3.1-5.4 3.1 1.2-6-4.5-4.1 6.1-.7z" fill="G"/>'
+    find: '<path d="M12 3.2l2.6 5.6 6.1.7-4.5 4.1 1.2 6-5.4-3.1-5.4 3.1 1.2-6-4.5-4.1 6.1-.7z" fill="G"/>',
+    future: '<circle cx="12" cy="10.5" r="7" fill="G"/><rect x="7.6" y="7.6" width="8.8" height="5.4" rx="2.7" fill="B"/><path d="M6.5 20.5c1-2.6 3-3.6 5.5-3.6s4.5 1 5.5 3.6" stroke="G" stroke-width="2.2" fill="none" stroke-linecap="round"/>'
   };
   const iconCache = {};
   function icon(type, color) {
@@ -331,7 +335,9 @@
   /* ------------------------------------------------------------
      Visibility, decluttering, and the height readout
      ------------------------------------------------------------ */
-  const filters = { landforms: true, missions: true, paths: true, space: true, labels: true };
+  const filters = { missions: true, paths: true, space: true, labels: true, future: true, types: {} };
+  LANDFORM_TYPES.forEach((t) => (filters.types[t] = true));
+  const allLandformsOn = () => LANDFORM_TYPES.every((t) => filters.types[t]);
   let selected = null;
   const occluderPos = new Cesium.Cartesian3();
   const win = new Cesium.Cartesian2();
@@ -350,11 +356,13 @@
     Object.values(roverPaths).forEach((rp) => { rp.under.show = rp.dash.show = showPaths; });
 
     const cand = [];
+    const everyLandform = allLandformsOn();
     for (const m of markers) {
       let ok;
       if (m.kind === "stop") ok = showPaths && hKm < 700;
-      else if (m.group === "landforms") ok = filters.landforms && (m.rank === 1 || (m.rank === 2 && hKm < 9000) || (m.rank === 3 && hKm < 4500));
+      else if (m.group === "landforms") ok = filters.types[m.obj.type] && (!everyLandform || m.rank === 1 || (m.rank === 2 && hKm < 9000) || (m.rank === 3 && hKm < 4500));
       else if (m.group === "missions") ok = filters.missions && (m.rank === 1 || hKm < 9000);
+      else if (m.group === "future") ok = filters.future && (m.rank === 1 || hKm < 9000);
       else ok = filters.space && hKm > 900;
       if (m === selected) ok = true;
       if (ok) ok = occ.isPointVisible(m.pos);
@@ -405,7 +413,7 @@
   function prio(m) {
     if (m === selected) return -10;
     if (m.kind === "stop") return 0;
-    const g = m.group === "missions" ? 0 : m.group === "space" ? 0.5 : 1;
+    const g = m.group === "missions" ? 0 : m.group === "space" || m.group === "future" ? 0.5 : 1;
     return m.rank * 2 + g;
   }
   function labelAllowed(m, hKm) {
@@ -496,9 +504,41 @@
   }
   function photoFigure(pia, alt) {
     if (!pia) return "";
-    const src = "https://images-assets.nasa.gov/image/" + pia + "/" + pia + "~small.jpg";
-    return '<figure class="photo"><img src="' + src + '" alt="' + esc(alt) + '" loading="lazy" onerror="this.closest(\'figure\').remove()"><figcaption>NASA image ' + pia + "</figcaption></figure>";
+    const base = "https://images-assets.nasa.gov/image/" + pia + "/" + pia;
+    return '<figure class="photo"><img src="' + base + '~medium.jpg" data-fallback="' + base + '~small.jpg" alt="' + esc(alt) +
+      '" onerror="marsPhotoFail(this)"><figcaption>NASA image ' + pia + "</figcaption></figure>";
   }
+
+  /* Big photo at the top of each card (photos are listed in js/data/photos.js) */
+  const PHOTOS = window.MARS_PHOTOS || {};
+  const PHOTO_SEARCH = window.MARS_PHOTO_SEARCH || {};
+  const galleryUrl = (q) => "https://images.nasa.gov/search?q=" + encodeURIComponent(q) + "&media=image&page=1";
+  function heroPhoto(p) {
+    const ph = PHOTOS[p.id];
+    if (!ph) {
+      const q = PHOTO_SEARCH[p.id];
+      return q ? '<p class="more-photos"><a href="' + esc(galleryUrl(q)) + '" target="_blank" rel="noopener">' + ICON_PHOTO + "See photos in NASA’s image library</a></p>" : "";
+    }
+    const nid = ph[0], size = ph[1] || "medium", cap = ph[2] || p.name, q = ph[3] || p.name, art = !!ph[4];
+    const base = "https://images-assets.nasa.gov/image/" + nid + "/" + nid;
+    const fallbacks = ["~small.jpg", "~orig.jpg"].map((x) => base + x).filter((u) => u !== base + "~" + size + ".jpg");
+    return '<figure class="hero">' +
+      '<a class="hero-img" href="https://images.nasa.gov/details/' + encodeURIComponent(nid) + '" target="_blank" rel="noopener" aria-label="Open this picture on NASA’s website">' +
+      '<img src="' + base + "~" + size + '.jpg" data-fallback="' + fallbacks.join("|") + '" alt="' + esc(cap) + '" onload="this.closest(\'figure\').classList.add(\'loaded\')" onerror="marsPhotoFail(this)"></a>' +
+      "<figcaption><span>" + (art ? "<b>Artist’s drawing.</b> " : "") + esc(cap) + "</span>" +
+      '<a href="' + esc(galleryUrl(q)) + '" target="_blank" rel="noopener">' + ICON_PHOTO + "See more photos</a></figcaption></figure>";
+  }
+  // If a picture can't load, try a smaller copy; if none work, hide the picture but keep the "See more photos" link.
+  window.marsPhotoFail = function (img) {
+    const list = (img.dataset.fallback || "").split("|").filter(Boolean);
+    const next = list.shift();
+    img.dataset.fallback = list.join("|");
+    if (next) { img.src = next; return; }
+    const fig = img.closest("figure");
+    if (!fig) return;
+    if (fig.classList.contains("hero")) fig.classList.add("failed");
+    else fig.remove();
+  };
 
   function showCard(html, badgeType, badgeText, badgeColor) {
     $("#cardBadge").innerHTML = '<img src="' + icon(badgeType, badgeColor) + '" alt="">' + esc(badgeText);
@@ -517,7 +557,8 @@
     selected = m;
     if (m.kind === "stop") return openStop(m.obj, opts);
     const p = m.obj, t = TYPES[p.type];
-    let html = "<h2>" + esc(p.name) + "</h2>";
+    let html = heroPhoto(p);
+    html += "<h2>" + esc(p.name) + "</h2>";
     html += '<p class="short">' + esc(p.short) + "</p>";
     html += p.body.map((b) => "<p>" + esc(b) + "</p>").join("");
     if (p.rover && roverNow[p.rover] && roverNow[p.rover].sol) {
@@ -535,6 +576,7 @@
     }
     if (p.type === "orbiter") html += '<p class="note">Spacecraft and their orbits are drawn much farther from Mars than they really are, so you can see them.</p>';
     if (p.type === "moon") html += '<p class="note">This moon’s orbit is drawn at its real distance from Mars.</p>';
+    if (p.type === "future") html += '<p class="note">No human landing site has been chosen yet. NASA has said it hopes to send astronauts to Mars as early as the 2030s.</p>';
     html += '<div class="actions">';
     if (p.rover && roverPaths[p.rover]) {
       html += '<button class="act primary" data-act="path">' + ICON_PATH + "<span>Follow the rover’s path<small>Tap camera and star dots along the way</small></span></button>";
@@ -669,19 +711,32 @@
   $("#tourPrev").onclick = () => { if (tour && tour.i > 0) { tour.i--; showTourStop(); } };
 
   // Map style
-  $$(".seg [data-style]").forEach((b) => (b.onclick = () => {
+  // Map style toggle (Photos / Heights) in the bottom bar
+  $$("[data-style]").forEach((b) => (b.onclick = () => {
     const height = b.dataset.style === "height";
-    $$(".seg [data-style]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+    $$("[data-style]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
     heightLayer.show = height;
     ctxLayer.show = hiriseLayer.show = !height;
     $("#legend").hidden = !height;
-    $("#styleHint").textContent = height
-      ? "Colors show how high or low the land is. Look for the deep blue Hellas Basin and the white tops of the giant volcanoes."
-      : "Real pictures taken by spacecraft. Zoom in and they get sharper.";
     lastHeightText = "";
     scene.requestRender();
   }));
   $$("[data-filter]").forEach((c) => (c.onchange = () => { filters[c.dataset.filter] = c.checked; scene.requestRender(); }));
+
+  // Landform type toggles in the Layers panel
+  (function buildTypeToggles() {
+    const counts = {};
+    PLACES.forEach((p) => (counts[p.type] = (counts[p.type] || 0) + 1));
+    $("#typeToggles").innerHTML = LANDFORM_TYPES.filter((t) => counts[t]).map((t) =>
+      '<label class="toggle"><input type="checkbox" data-type="' + t + '" checked><img src="' + icon(t) + '" alt=""><span>' +
+      esc(LANDFORM_LABELS[t]) + " <small>" + counts[t] + " on the map</small></span></label>").join("");
+    $$("[data-type]").forEach((c) => (c.onchange = () => { filters.types[c.dataset.type] = c.checked; scene.requestRender(); }));
+    $$("[data-all]").forEach((b) => (b.onclick = () => {
+      const on = b.dataset.all === "on";
+      $$("[data-type]").forEach((c) => { c.checked = on; filters.types[c.dataset.type] = on; });
+      scene.requestRender();
+    }));
+  })();
 
   // Full screen (iPad supports this in Safari; also works when added to the Home Screen)
   const fsEl = document.documentElement;
@@ -707,7 +762,7 @@
     "<li>" + esc(CFG.imagery.color.credit) + "</li><li>" + esc(CFG.imagery.ctx.credit) + "</li><li>" + esc(CFG.imagery.hirise.credit) + "</li><li>" + esc(CFG.imagery.height.credit) + "</li>" +
     "<li>Basic offline map: NASA 3D Resources (Viking-based global map)</li>" +
     "<li>Rover positions: NASA/JPL-Caltech MMGIS rover maps (mars.nasa.gov)</li>" +
-    "<li>Photos linked on cards: NASA/JPL-Caltech and partners, via NASA Photojournal</li>" +
+    "<li>Card photos: NASA Image and Video Library (images.nasa.gov) and NASA Photojournal. NASA/JPL-Caltech, NASA, ESA, University of Arizona, MSSS, and other mission partners.</li>" +
     "<li>3D globe: CesiumJS (Apache 2.0 license). Fonts: Big Shoulders Display and Atkinson Hyperlegible (SIL Open Font License).</li></ul>" +
     "<p>This explorer is an independent classroom project. It is not made by or endorsed by NASA.</p>";
 

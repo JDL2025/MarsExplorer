@@ -873,6 +873,65 @@
     facts: [["Size", "About 15 × 12 × 11 km"], ["Distance above Mars", "About 20,000 km"], ["One orbit takes", "About 30 hours"], ["Discovered", "1877 by Asaph Hall"]],
     earth: "In Greek myths, Phobos (fear) and Deimos (dread) were the sons of Ares, the god of war. Mars is the Roman name for Ares.",
     video: S("Deimos moon Mars")
+  },
+
+  /* ================================================================
+     POSSIBLE FUTURE HUMAN LANDING SITES
+     No site has been chosen yet. These are places scientists and
+     engineers have studied as candidates.
+     ================================================================ */
+  {
+    id: "arcadia", name: "Arcadia Planitia", type: "future",
+    lat: 39.8, lon: -157.9, view: 900, rank: 1,
+    short: "Flat northern plains with water ice hidden just under the ground.",
+    body: [
+      "No one has picked the first landing site for astronauts yet. But scientists from NASA and engineers from the company SpaceX have studied spots here as possible landing sites for SpaceX’s Starship.",
+      "Why here? Radar and fresh craters show that lots of water ice is buried just under the surface. Astronauts could dig it up and turn it into drinking water, oxygen to breathe, and rocket fuel for the trip home.",
+      "The ground is smooth and flat with few big rocks, which makes landing safer. It is also low — about 4 km below Mars’ average surface level — so there is more air above it to help slow a spaceship down."
+    ],
+    facts: [["Location", "Northern plains, about 40° north"], ["Height", "About 4 km below average"], ["Key resource", "Buried water ice"], ["Studied for", "SpaceX Starship (with NASA scientists)"]],
+    earth: "Ice buried under soil is like the permafrost found in Alaska and northern Canada.",
+    video: S("humans to Mars landing site"),
+    link: { label: "HiRISE photo of a possible Starship landing site (University of Arizona)", url: "https://hirise.lpl.arizona.edu/ESP_060706_2195" }
+  },
+  {
+    id: "phlegra", name: "Phlegra Montes", type: "future",
+    lat: 35.23, lon: 163.95, view: 900, rank: 2,
+    short: "Hills wrapped in hidden glaciers — a possible human landing area.",
+    body: [
+      "Phlegra Montes is a chain of hills on the northern plains. Around the hills are “debris aprons” — glaciers of water ice covered by a protective blanket of dust and rocks.",
+      "Scientists working with SpaceX listed sites near Phlegra Montes as possible landing spots. It is a bit closer to the equator than other icy sites, which means it is warmer and gets more sunlight."
+    ],
+    facts: [["Location", "About 35° north"], ["Height", "About 3 km below average"], ["Key resource", "Ice-rich glaciers under debris"], ["Status", "Candidate only — not chosen"]],
+    earth: "Some glaciers in Antarctica are also hidden under rocks and dust, which protects the ice from melting away.",
+    video: S("humans to Mars landing site"),
+    link: { label: "Scientists’ report on possible Starship landing sites (advanced reading)", url: "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf" }
+  },
+  {
+    id: "erebus", name: "Erebus Montes", type: "future",
+    lat: 39.89, lon: -167.97, view: 900, rank: 2,
+    short: "Low mountains where radar found strong signs of shallow ice.",
+    body: [
+      "Erebus Montes is a group of small mountains next to Arcadia Planitia. Scientists studying possible SpaceX Starship landing sites found that radar showed especially strong signs of ice close to the surface at one spot here.",
+      "Choosing a landing site is a balancing act: the ground must be safe to land on, have water ice nearby, and be low enough for the thin air to help slow a spaceship down."
+    ],
+    facts: [["Location", "About 40° north"], ["Height", "About 4 km below average"], ["Key resource", "Shallow buried ice"], ["Status", "Candidate only — not chosen"]],
+    earth: "On Earth, explorers in Antarctica melt ice and snow for water — future Mars explorers may do the same.",
+    video: S("humans to Mars landing site"),
+    link: { label: "Scientists’ report on possible Starship landing sites (advanced reading)", url: "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf" }
+  },
+  {
+    id: "meridiani", name: "Meridiani Planum", type: "future",
+    lat: 0.2, lon: -2.5, view: 1200, rank: 2,
+    short: "Flat equator plains that NASA scientists proposed as a place for astronauts to explore.",
+    body: [
+      "In 2015, NASA held a workshop where scientists proposed more than 40 possible “exploration zones” for the first astronauts. Meridiani Planum was one of them.",
+      "It is close to the equator, so it is warmer and sunnier than the north. It is flat, and the Opportunity rover already explored it for years — so scientists know a lot about its rocks, which formed in water long ago."
+    ],
+    facts: [["Location", "Near the equator"], ["Proposed at", "NASA workshop, 2015"], ["Bonus", "Explored by the Opportunity rover"], ["Status", "Candidate only — not chosen"]],
+    earth: "The hematite “blueberries” Opportunity found here are similar to iron-rich stones found in Utah’s deserts.",
+    video: S("humans to Mars landing site"),
+    link: { label: "Where should humans land on Mars? (The Planetary Society)", url: "https://www.planetary.org/articles/20151027-humans-mars-workshop" }
   }
   ];
 
@@ -982,6 +1041,9 @@
       stops: ["mars3", "viking1", "viking2", "sojourner", "beagle2", "spirit", "opportunity", "phoenix", "curiosity", "schiaparelli_edm", "insight", "perseverance", "ingenuity", "zhurong"] },
     { id: "ice", name: "Ice on Mars", icon: "❄️",
       blurb: "Where is Mars’ water hiding today?",
-      stops: ["northcap", "chasmaboreale", "korolev", "phoenix", "utopia", "southcap", "medusae"] }
+      stops: ["northcap", "chasmaboreale", "korolev", "phoenix", "utopia", "southcap", "medusae"] },
+    { id: "humans", name: "Where Will Humans Land?", icon: "🧑‍🚀",
+      blurb: "Visit places scientists have studied for the first astronauts on Mars.",
+      stops: ["arcadia", "erebus", "phlegra", "meridiani"] }
   ];
 })();

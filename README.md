@@ -3,10 +3,12 @@
 A 3D globe of Mars that you can spin. It's made for 7th-grade science on school iPads.
 
 - **Real NASA pictures that sharpen as you zoom.** From far away you see a full-color map from the Viking orbiters (about 230 m per pixel). As you zoom in, close-up photos from Mars Reconnaissance Orbiter's CTX camera appear (about 5 m per pixel, almost everywhere on Mars). At famous places with HiRISE coverage, you can see details as small as about 25–50 cm.
-- **65 pins with info cards.** There are 39 landforms (volcanoes, canyons, river channels, craters, basins, ice), 14 rovers, landers, and a helicopter, plus 10 orbiters and both moons. Every landform card has a *Compare it with Earth* section.
+- **69 pins with info cards.** There are 39 landforms (volcanoes, canyons, river channels, craters, basins, ice), 14 rovers, landers, and a helicopter, 10 orbiters, both moons, and 4 possible future human landing sites. Every landform card has a *Compare it with Earth* section.
+- **Photos on the cards.** 63 cards open with a real NASA photo (or a labeled artist's drawing). Tap the photo to see it full size on NASA's website, or tap **See more photos** to browse NASA's image library.
+- **Layers.** Turn each kind of landform on or off (volcanoes, canyons, river channels, craters, basins, ice, and more). Turn on just one kind to see every example on Mars.
 - **Rover paths.** Zoom in on Perseverance or Curiosity to see their real driving routes, based on NASA's published rover positions. Camera dots open real NASA photos taken at those spots. Star dots explain big discoveries. Spirit and Opportunity have approximate routes through their main stops.
-- **4 guided tours.** *Canyons, Channels & Craters*, *Giant Volcanoes*, *Robot Road Trip*, and *Ice on Mars*.
-- **Height-color map** made from the Mars Global Surveyor laser altimeter.
+- **5 guided tours.** *Canyons, Channels & Craters*, *Giant Volcanoes*, *Robot Road Trip*, *Ice on Mars*, and *Where Will Humans Land?*
+- **Photos / Heights switch** on the bottom bar. It flips between real pictures and a height-color map made from the Mars Global Surveyor laser altimeter.
 - **No ads, no logins, no tracking.** It's all plain files you own.
 
 ---
@@ -37,6 +39,7 @@ This folder is small: about 20 files. The big 3D globe engine (CesiumJS) loads f
 | What you want to change | Where |
 |---|---|
 | Card text, facts, Earth comparisons, video links | `js/data/places.js`. Each place is clearly labeled. |
+| The big photo on each card | `js/data/photos.js`. Swap in any picture ID from images.nasa.gov. |
 | Rover photo and discovery dots | `js/data/places.js`, the section called `ROVER_STOPS` |
 | Guided tours (which stops, in what order) | `js/data/places.js`, the section called `MARS_TOURS` |
 | Title, starting view, map picture sources | `js/config.js` |
@@ -141,6 +144,10 @@ Videos marked *Direct video* go straight to one specific video. The others open 
 | Tianwen-1 Orbiter (China) | Search of all of YouTube for "Tianwen-1 Mars orbiter" | https://www.youtube.com/results?search_query=Tianwen-1%20Mars%20orbiter |
 | Phobos (moon) | Search of @NASAJPL for "Phobos moon Mars" | https://www.youtube.com/@NASAJPL/search?query=Phobos%20moon%20Mars |
 | Deimos (moon) | Search of @NASAJPL for "Deimos moon Mars" | https://www.youtube.com/@NASAJPL/search?query=Deimos%20moon%20Mars |
+| Arcadia Planitia | Search of @NASAJPL for "humans to Mars landing site" | https://www.youtube.com/@NASAJPL/search?query=humans%20to%20Mars%20landing%20site |
+| Phlegra Montes | Search of @NASAJPL for "humans to Mars landing site" | https://www.youtube.com/@NASAJPL/search?query=humans%20to%20Mars%20landing%20site |
+| Erebus Montes | Search of @NASAJPL for "humans to Mars landing site" | https://www.youtube.com/@NASAJPL/search?query=humans%20to%20Mars%20landing%20site |
+| Meridiani Planum | Search of @NASAJPL for "humans to Mars landing site" | https://www.youtube.com/@NASAJPL/search?query=humans%20to%20Mars%20landing%20site |
 
 ---
 
@@ -151,6 +158,8 @@ Videos marked *Direct video* go straight to one specific video. The others open 
 - Super close-ups: NASA/JPL-Caltech/University of Arizona HiRISE, hosted by Esri
 - Low-detail offline map: NASA 3D Resources
 - Rover positions: NASA/JPL-Caltech MMGIS "Where is the rover" maps
+- Card photos: NASA Image and Video Library (images.nasa.gov); NASA/JPL-Caltech, MSSS, University of Arizona, ESA and other mission partners
+- Possible human landing sites: Golombek et al., "SpaceX Starship Landing Sites on Mars" (LPSC 2021); NASA First Landing Site/Exploration Zone Workshop (2015)
 - 3D globe engine: CesiumJS, Apache 2.0 license, loaded from the jsDelivr CDN (backup: unpkg)
 - Fonts: Big Shoulders Display and Atkinson Hyperlegible, SIL Open Font License (`assets/fonts/`)
 
