@@ -316,3 +316,54 @@ button:focus-visible, input:focus-visible + span { outline: 3px solid var(--suns
   .dock-btn { white-space: normal; line-height: 1.1; font-size: 10.5px; height: 58px; }
   .dock-seg .dock-btn { height: 52px; }
 }
+
+/* Show everything / Clear the globe */
+.everything { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 2px 0 10px; }
+.everything .wide-btn { margin-top: 0; min-height: 48px; font-size: 16px; }
+
+/* ---------- Search ---------- */
+.panel.panel-top {
+  top: calc(12px + var(--safe-t)); bottom: auto;
+  max-height: min(600px, 52vh);
+  animation-name: drop;
+}
+@keyframes drop { from { transform: translateY(-12px); opacity: 0; } to { transform: none; opacity: 1; } }
+.search-box {
+  position: relative; display: flex; align-items: center; margin: 4px 16px 6px;
+  background: var(--dusk); border: 2px solid var(--line); border-radius: 14px;
+}
+.search-box:focus-within { border-color: var(--sunset); }
+.search-box svg { width: 22px; height: 22px; margin-left: 12px; flex: none; fill: none; stroke: var(--ink-dim); stroke-width: 2; stroke-linecap: round; }
+.search-box input {
+  flex: 1; min-width: 0; height: 52px; padding: 0 8px 0 10px; border: 0; background: transparent;
+  color: var(--ink); font: 400 18px/1 var(--body); outline: none; -webkit-appearance: none; appearance: none;
+  user-select: text; -webkit-user-select: text;
+}
+.search-box input::placeholder { color: var(--ink-dim); }
+.search-box input::-webkit-search-cancel-button { display: none; }
+#searchClear { width: 44px; height: 44px; border: 0; background: none; color: var(--ink-dim); font-size: 18px; cursor: pointer; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--dusk-2); color: var(--ink); font-weight: 700; font-size: 15px; cursor: pointer;
+}
+.chip:active { background: var(--dusk-3); }
+.show-results { width: 100%; margin: 4px 0 10px; }
+
+/* Bar shown while the globe is showing only search results */
+.focusbar {
+  position: absolute; z-index: 24; left: 50%; transform: translateX(-50%);
+  top: calc(14px + var(--safe-t));
+  display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 18px;
+  background: var(--glass); border: 1px solid var(--sunset); border-radius: 999px;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  font-weight: 700; font-size: 16px; max-width: calc(100vw - 24px);
+}
+.focusbar[hidden] { display: none; }
+.focusbar button {
+  min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px;
+  background: var(--sunset); color: var(--dusk); font-weight: 700; font-size: 15px; cursor: pointer; white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .focusbar { top: auto; bottom: calc(var(--dock-h) + 24px + var(--safe-b)); }
+}

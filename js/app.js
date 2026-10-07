@@ -339,6 +339,7 @@
   LANDFORM_TYPES.forEach((t) => (filters.types[t] = true));
   const allLandformsOn = () => LANDFORM_TYPES.every((t) => filters.types[t]);
   let selected = null;
+  let focusIds = null;   // when set, the globe shows only these search results
   const occluderPos = new Cesium.Cartesian3();
   const win = new Cesium.Cartesian2();
   let lastHeightText = "";
@@ -352,14 +353,17 @@
   function updateVisibility() {
     const hKm = cameraHeightKm();
     const occ = new Cesium.EllipsoidalOccluder(MARS, Cesium.Cartesian3.clone(camera.positionWC, occluderPos));
-    const showPaths = filters.paths && filters.missions && hKm < 3000;
-    Object.values(roverPaths).forEach((rp) => { rp.under.show = rp.dash.show = showPaths; });
+    const showPaths = (focusIds ? true : filters.paths && filters.missions) && hKm < 3000;
+    Object.entries(roverPaths).forEach(([id, rp]) => { rp.under.show = rp.dash.show = showPaths && (!focusIds || focusIds.has(id)); });
 
     const cand = [];
     const everyLandform = allLandformsOn();
     for (const m of markers) {
       let ok;
-      if (m.kind === "stop") ok = showPaths && hKm < 700;
+      if (focusIds) {
+        ok = focusIds.has(m.obj.id) || (m.kind === "stop" && focusIds.has(m.rover) && hKm < 700);
+      }
+      else if (m.kind === "stop") ok = showPaths && hKm < 700;
       else if (m.group === "landforms") ok = filters.types[m.obj.type] && (!everyLandform || m.rank === 1 || (m.rank === 2 && hKm < 9000) || (m.rank === 3 && hKm < 4500));
       else if (m.group === "missions") ok = filters.missions && (m.rank === 1 || hKm < 9000);
       else if (m.group === "future") ok = filters.future && (m.rank === 1 || hKm < 9000);
@@ -372,7 +376,7 @@
       }
       m.cand = ok;
       if (ok) cand.push(m);
-      if (m.ring) m.ring.show = filters.space && hKm > 900 && (m.obj.moon || m === selected);
+      if (m.ring) m.ring.show = (focusIds ? m.cand : filters.space && hKm > 900) && (m.obj.moon || m === selected);
     }
     // Priority: selected first, then path stops (when close), then rank, missions before landforms
     cand.sort((a, b) => prio(a) - prio(b));
@@ -389,7 +393,7 @@
     // labels: must not cover other pins or other labels
     const boxes = placed.map((q) => ({ x0: q.sx - q.size / 2, x1: q.sx + q.size / 2, y0: q.sy - q.size / 2, y1: q.sy + q.size / 2, owner: q }));
     for (const m of placed) {
-      let showLabel = filters.labels && (m === selected || labelAllowed(m, hKm));
+      let showLabel = filters.labels && (m === selected || (focusIds && m.kind === "place") || labelAllowed(m, hKm));
       if (showLabel) {
         const wLab = m.title.length * 8.4 + 8, top = m.sy + m.size / 2 + 2;
         const box = { x0: m.sx - wLab / 2, x1: m.sx + wLab / 2, y0: top, y1: top + 22, owner: m };
@@ -512,7 +516,9 @@
   /* Big photo at the top of each card (photos are listed in js/data/photos.js) */
   const PHOTOS = window.MARS_PHOTOS || {};
   const PHOTO_SEARCH = window.MARS_PHOTO_SEARCH || {};
-  const galleryUrl = (q) => "https://images.nasa.gov/search?q=" + encodeURIComponent(q) + "&media=image&page=1";
+  // Same link format NASA's image library uses itself (it needs the year range to search)
+  const galleryUrl = (q) => "https://images.nasa.gov/search?media=image&page=1&q=" + encodeURIComponent(q).replace(/%20/g, "+") +
+    "&yearEnd=" + new Date().getFullYear() + "&yearStart=1920";
   function heroPhoto(p) {
     const ph = PHOTOS[p.id];
     if (!ph) {
@@ -654,6 +660,7 @@
     if (name !== "about" && name !== "help") { /* keep card */ }
     if (isSheetLayout()) { $("#card").hidden = true; }
     panel.hidden = false;
+    if (name === "search") { try { $("#searchInput").focus({ preventScroll: true }); } catch (e) { /* ignore */ } }
     const b = $('.dock-btn[data-panel="' + name + '"]');
     if (b) b.setAttribute("aria-expanded", "true");
   }
@@ -731,9 +738,17 @@
       '<label class="toggle"><input type="checkbox" data-type="' + t + '" checked><img src="' + icon(t) + '" alt=""><span>' +
       esc(LANDFORM_LABELS[t]) + " <small>" + counts[t] + " on the map</small></span></label>").join("");
     $$("[data-type]").forEach((c) => (c.onchange = () => { filters.types[c.dataset.type] = c.checked; scene.requestRender(); }));
-    $$("[data-all]").forEach((b) => (b.onclick = () => {
-      const on = b.dataset.all === "on";
-      $$("[data-type]").forEach((c) => { c.checked = on; filters.types[c.dataset.type] = on; });
+    // "Show all" / "Hide all" buttons. Names on the map are left as they are.
+    const MISSION_FILTERS = ["missions", "paths", "future", "space"];
+    $$("[data-set-group]").forEach((b) => (b.onclick = () => {
+      const on = b.dataset.set === "on", g = b.dataset.setGroup;
+      if (g === "all") clearFocus();
+      if (g === "landforms" || g === "all") {
+        $$("[data-type]").forEach((c) => { c.checked = on; filters.types[c.dataset.type] = on; });
+      }
+      if (g === "missions" || g === "all") {
+        MISSION_FILTERS.forEach((f) => { filters[f] = on; const c = $('[data-filter="' + f + '"]'); if (c) c.checked = on; });
+      }
       scene.requestRender();
     }));
   })();
@@ -765,6 +780,150 @@
     "<li>Card photos: NASA Image and Video Library (images.nasa.gov) and NASA Photojournal. NASA/JPL-Caltech, NASA, ESA, University of Arizona, MSSS, and other mission partners.</li>" +
     "<li>3D globe: CesiumJS (Apache 2.0 license). Fonts: Big Shoulders Display and Atkinson Hyperlegible (SIL Open Font License).</li></ul>" +
     "<p>This explorer is an independent classroom project. It is not made by or endorsed by NASA.</p>";
+
+  /* ------------------------------------------------------------
+     Search
+     ------------------------------------------------------------ */
+  const norm = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[’'‘“”"]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  // Everyday words students might type, for each kind of pin
+  const TYPE_WORDS = {
+    volcano: "volcano volcanoes volcanic lava magma eruption shield caldera mons mountain",
+    canyon: "canyon canyons chasm chasma gorge cliff",
+    channel: "river rivers stream channel channels valley valleys valles vallis flood floods water delta meander outflow",
+    crater: "crater craters impact meteor meteorite asteroid hole",
+    basin: "basin basins plain plains planitia lowland lowlands impact",
+    ice: "ice icy polar pole poles frozen glacier glaciers frost snow cap water",
+    region: "region place mesa dunes sand",
+    rover: "rover rovers robot robots wheels mission missions",
+    helicopter: "helicopter drone flying flight aircraft robot mission",
+    lander: "lander landers landing robot spacecraft mission missions",
+    orbiter: "orbiter orbiters satellite satellites spacecraft orbit space mission missions",
+    moon: "moon moons satellite orbit",
+    future: "human humans astronaut astronauts people crew future spacex starship base colony landing site"
+  };
+  const CATEGORY_NAMES = {
+    volcano: "volcanoes", canyon: "canyons", channel: "river channels & valleys", crater: "craters", basin: "basins & plains",
+    ice: "ice & polar places", region: "other famous places", rover: "rovers", helicopter: "helicopters", lander: "landers",
+    orbiter: "orbiters", moon: "moons", future: "possible human landing sites"
+  };
+  const words = (t) => norm(t).split(" ").filter(Boolean);
+  const searchIndex = [];
+  PLACES.forEach((p) => searchIndex.push({
+    id: p.id, kind: "place", type: p.type, rank: p.rank || 2, name: p.name, sub: p.short,
+    nameW: words(p.name), typeW: words(TYPE_WORDS[p.type] + " " + TYPES[p.type].label),
+    shortW: words(p.short), bodyW: words((p.body || []).join(" ") + " " + (p.earth || ""))
+  }));
+  Object.values(STOPS).forEach((list) => list.forEach((st) => {
+    const rover = PLACES.find((p) => p.rover === st.rover);
+    searchIndex.push({
+      id: st.id, kind: "stop", type: st.kind, rank: 4, name: st.name, sub: (rover ? rover.name : "") + (st.date ? ", " + st.date : ""),
+      nameW: words(st.name), typeW: words(st.kind === "photo" ? "photo picture" : "discovery"), shortW: words(rover ? rover.name : ""), bodyW: words(st.text)
+    });
+  }));
+  function stems(tok) {
+    const out = [tok];
+    if (tok.length > 4 && tok.endsWith("es")) out.push(tok.slice(0, -2));
+    if (tok.length > 3 && tok.endsWith("s")) out.push(tok.slice(0, -1));
+    return out;
+  }
+  const hit = (list, forms) => list.some((w) => forms.some((f) => w.startsWith(f)));
+  function runSearch(q) {
+    const toks = words(q);
+    if (!toks.length) return { results: [], types: [] };
+    // Which kinds of pins does the search describe? ("crater" -> all craters)
+    const types = Object.keys(TYPE_WORDS).filter((t) => toks.every((tok) => hit(words(TYPE_WORDS[t]), stems(tok))));
+    const results = [];
+    for (const it of searchIndex) {
+      let score = 0, ok = true;
+      for (const tok of toks) {
+        const f = stems(tok);
+        if (hit(it.nameW, f)) score += 3;
+        else if (hit(it.typeW, f)) score += 2;
+        else if (hit(it.shortW, f)) score += 1;
+        else if (tok.length > 3 && hit(it.bodyW, f)) score += 0.4;
+        else { ok = false; break; }
+      }
+      if (ok) {
+        if (norm(it.name).startsWith(norm(q))) score += 2;
+        // "strong" = really this kind of thing (or named for it), not just mentioned in the text
+        const named = toks.every((tok) => hit(it.nameW, stems(tok)));
+        const strong = types.length ? (types.includes(it.type) || named) : score >= 1;
+        results.push({ it, score: score + (strong ? 10 : 0), strong });
+      }
+    }
+    results.sort((a, b) => b.score - a.score || a.it.rank - b.it.rank || a.it.name.localeCompare(b.it.name));
+    return { results: results.filter((r) => r.strong).map((r) => r.it), more: results.filter((r) => !r.strong).map((r) => r.it), types };
+  }
+
+  const SUGGEST = [["Craters", "crater"], ["Volcanoes", "volcano"], ["Canyons", "canyon"], ["Rivers & valleys", "river"], ["Ice", "ice"],
+    ["Rovers", "rover"], ["Landers", "lander"], ["Orbiters", "orbiter"], ["Moons", "moon"], ["Human landing sites", "astronaut"]];
+  function renderSearch() {
+    const q = $("#searchInput").value;
+    $("#searchClear").hidden = !q;
+    const box = $("#searchResults");
+    if (!norm(q)) {
+      box.innerHTML = '<h3 class="group-title">Quick searches</h3><div class="chips">' +
+        SUGGEST.map((s) => '<button class="chip" data-q="' + esc(s[1]) + '">' + esc(s[0]) + "</button>").join("") + "</div>" +
+        '<p class="hint">Type the name of a place or spacecraft, or a kind of thing, like “crater” or “river.”</p>';
+      box.querySelectorAll("[data-q]").forEach((b) => (b.onclick = () => { $("#searchInput").value = b.dataset.q; renderSearch(); }));
+      return;
+    }
+    const { results, more, types } = runSearch(q);
+    if (!results.length && !more.length) {
+      box.innerHTML = '<p class="hint">No matches for “' + esc(q) + '”. Check the spelling, or try a word like “crater,” “volcano,” “rover,” or “ice.”</p>';
+      return;
+    }
+    const places = results.filter((r) => r.kind === "place");
+    let html = "";
+    if (places.length > 1) {
+      const label = types.length === 1 ? "Show all " + places.length + " " + CATEGORY_NAMES[types[0]] + " on the globe" : "Show these " + places.length + " results on the globe";
+      html += '<button class="act primary show-results" id="showResults"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/></svg><span>' + esc(label) + "<small>Hides everything else until you tap “Show everything”</small></span></button>";
+    }
+    const row = (r) => {
+      const ic = r.kind === "stop" ? icon(r.type) : icon(r.type, (PLACES.find((p) => p.id === r.id) || {}).color);
+      return '<button class="place-row" data-id="' + r.id + '"><img src="' + ic + '" alt=""><div><b>' + esc(r.name) + "</b><span>" + esc(r.sub || "") + "</span></div></button>";
+    };
+    html += results.slice(0, 40).map(row).join("");
+    if (more.length) html += '<h3 class="group-title">Also mentions “' + esc(q.trim()) + '”</h3>' + more.slice(0, 30).map(row).join("");
+    box.innerHTML = html;
+    box.querySelectorAll(".place-row").forEach((b) => (b.onclick = () => { if (tour) endTour(); $("#searchInput").blur(); openPlace(b.dataset.id); }));
+    const sr = $("#showResults");
+    if (sr) sr.onclick = () => showOnGlobe(places.map((r) => r.id), types.length === 1 ? CATEGORY_NAMES[types[0]] : "results for “" + q.trim() + "”");
+  }
+  function showOnGlobe(ids, what) {
+    focusIds = new Set(ids);
+    $("#focusText").textContent = "Showing " + ids.length + " " + what;
+    $("#focusBar").hidden = false;
+    $("#searchInput").blur();
+    closePanels();
+    $("#card").hidden = true; selected = null;
+    if (tour) endTour();
+    // Fly to a view centered on the results
+    const sum = new Cesium.Cartesian3();
+    const pts = ids.map((id) => byId[id]).filter((m) => m && !m.space).map((m) => Cesium.Cartesian3.normalize(m.pos, new Cesium.Cartesian3()));
+    if (pts.length) {
+      pts.forEach((v) => Cesium.Cartesian3.add(sum, v, sum));
+      const c = MARS.cartesianToCartographic(Cesium.Cartesian3.multiplyByScalar(Cesium.Cartesian3.normalize(sum, sum), R, sum));
+      const center = Cesium.Cartesian3.normalize(sum, new Cesium.Cartesian3());
+      const spread = Math.max(...pts.map((v) => Math.acos(Math.min(1, Cesium.Cartesian3.dot(v, center)))));
+      const hKm = Math.min(11000, Math.max(400, (R / 1000) * spread * 2.6));
+      flyTo(Cesium.Math.toDegrees(c.longitude), Cesium.Math.toDegrees(c.latitude), hKm);
+    } else goHome();
+    scene.requestRender();
+  }
+  function clearFocus() {
+    focusIds = null;
+    $("#focusBar").hidden = true;
+    scene.requestRender();
+  }
+  $("#focusClear").onclick = clearFocus;
+  $("#searchInput").addEventListener("input", renderSearch);
+  $("#searchInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); $("#searchInput").blur(); }
+  });
+  $("#searchClear").onclick = () => { $("#searchInput").value = ""; renderSearch(); $("#searchInput").focus(); };
+  renderSearch();
 
   // First-visit help
   if (CFG.showHelpOnFirstVisit && !store.get("mars-help-seen")) openPanel("help");

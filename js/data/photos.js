@@ -104,10 +104,7 @@ window.MARS_PHOTOS = {
 
 /* "See more photos" for cards without a main photo */
 window.MARS_PHOTO_SEARCH = {
-  maadim: "Ma'adim Vallis Gusev",
-  mom: "Mars Orbiter Mission India",
+  maadim: "Gusev crater",
   tgo: "Trace Gas Orbiter",
-  hope: "Hope Emirates Mars",
-  tianwen1: "Tianwen-1",
   erebus: "Arcadia Planitia"
 };
