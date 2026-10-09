@@ -469,13 +469,20 @@
   }
   camera.setView({ destination: cart(CFG.startView.lon, CFG.startView.lat, CFG.startView.heightKm * 1000) });
 
-  function flyToPlace(p) {
+  function flyToPlace(p, tapped) {
     if (p._h) {
       // spacecraft & moons: look past them toward Mars
       flyTo(p._lon, p._lat, p.view, { shift: true });
-    } else {
-      flyTo(p._lon, p._lat, p.view || 800, { shift: true });
+      return;
     }
+    const target = p.view || 800;
+    if (tapped) {
+      // Tapped an icon while already zoomed in closer than usual: stay at that height (never zoom back out),
+      // just glide over so the place is centered.
+      const nowKm = cameraHeightKm();
+      if (nowKm < target) { flyTo(p._lon, p._lat, Math.max(nowKm, 0.3), { shift: true, duration: 1.2 }); return; }
+    }
+    flyTo(p._lon, p._lat, target, { shift: true });
   }
   function flyToPath(rover) {
     const rp = roverPaths[rover];
@@ -648,7 +655,7 @@
     $("#cardContent").querySelectorAll("[data-act]").forEach((b) => {
       b.onclick = () => { if (b.dataset.act === "path") flyToPath(p.rover); else flyToPlace(p); };
     });
-    if (!opts.noFly && !(opts.fromTap && p.rover)) flyToPlace(p);
+    if (!opts.noFly && !(opts.fromTap && p.rover)) flyToPlace(p, opts.fromTap);
     scene.requestRender();
   }
 
@@ -1011,7 +1018,45 @@
       $("#statusToggle").setAttribute("aria-expanded", String(open));
       $("#statusMoreLabel").textContent = open ? "Less" : "More";
     };
-    $("#statusToggle").onclick = () => setOpen($("#statusMore").hidden);
+    $("#statusToggle").onclick = () => { setOpen($("#statusMore").hidden); placeStatus(); };
+
+    // When there's room beside the menu bar, line the box up with the bottom of the menu bar.
+    // On iPad-size screens the menu bar slides a little to the left to make room (only when it fits).
+    let lowLayout = false, closedW = 0;
+    function placeStatus() {
+      const st = $("#status"), dock = $(".dock");
+      if (!st || !dock || st.hidden) return;
+      const open = st.classList.contains("open");
+      if (!open) closedW = st.offsetWidth || closedW;
+      const sw = closedW || 284, W = window.innerWidth;
+      dock.style.left = ""; dock.style.transform = "";
+      st.classList.remove("low");
+      lowLayout = false;
+      const d = dock.getBoundingClientRect();
+      if (d.width > 0 && d.right + 16 + sw + 12 <= W) {
+        lowLayout = true;
+      } else {
+        const avail = W - sw - 12 - 16 - 12;          // space to the left of the box
+        if (d.width > 0 && d.width <= avail) {
+          dock.style.left = Math.round(12 + (avail - d.width) / 2) + "px";
+          dock.style.transform = "none";
+          lowLayout = true;
+        }
+      }
+      if (!lowLayout) return;
+      // The expanded box is wider; if it would bump into the menu bar, it rises above it instead.
+      const dr = dock.getBoundingClientRect().right;
+      st.classList.toggle("low", !open || W - 12 - st.offsetWidth >= dr + 16);
+    }
+    placeStatus();
+    window.addEventListener("resize", placeStatus);
+    window.addEventListener("orientationchange", () => setTimeout(placeStatus, 300));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeStatus);
+    setTimeout(placeStatus, 1500);
+    // Tuck the box away while an info card is open (the card sits on top of that corner)
+    const syncCard = () => $("#status").classList.toggle("under-card", !$("#card").hidden);
+    new MutationObserver(syncCard).observe($("#card"), { attributes: true, attributeFilter: ["hidden"] });
+    syncCard();
   })();
 
   // First-visit help

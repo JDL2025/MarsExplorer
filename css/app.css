@@ -466,3 +466,7 @@ button:focus-visible, input:focus-visible + span { outline: 3px solid var(--suns
 }
 .photo-story h3 { margin: 0 0 4px; font-family: var(--display); font-size: 21px; color: var(--butterscotch); }
 .photo-story p { margin: 0; font-size: 16px; }
+
+/* Mars right now: sit level with the bottom of the menu bar when there's room beside it (set by app.js) */
+.status.low { bottom: calc(12px + var(--safe-b)); }
+.status.under-card { visibility: hidden; }
