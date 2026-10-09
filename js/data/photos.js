@@ -60,11 +60,15 @@ window.MARS_PHOTOS = {
   cerberus:     ["PIA11323", "medium", "Cracks of Cerberus Fossae, seen from orbit", "Cerberus Fossae"],
   medusae:      ["PIA21111", "medium", "Wind-carved rock in the Medusae Fossae region", "Medusae Fossae"],
   face:         ["PIA01141", "orig",   "The blurry 1976 Viking orbiter photo that made this hill look like a face", "Cydonia"],
+  galle:        ["PIA02325", "orig", "Galle Crater’s “happy face,” with frost on its slopes in early spring", "Galle crater"],
+  dustdevil:    ["PIA15116", "medium", "The “serpent” dust devil and its long shadow, seen from orbit (2012)", "Mars dust devil"],
   russell:      ["PIA09351", "medium", "Frost disappearing from the Russell Crater dunes in spring", "Russell crater dunes"],
 
   /* Ice */
   northcap:     ["PIA00197", "medium", "Mars’ north polar ice cap and its spiral troughs, seen by a Viking orbiter", "Mars north polar cap"],
   southcap:     ["PIA08540", "medium", "The edge of the south polar ice cap", "Mars south polar cap"],
+  spiders:      ["PIA21126", "orig", "Spider-shaped channels near the south pole, photographed by HiRISE", "Mars spiders south pole"],
+  avalanche:    ["PIA10245", "medium", "At least four avalanches falling down the north polar cliffs at the same moment (2008)", "Mars avalanche"],
 
   /* Rovers & helicopter */
   perseverance: ["PIA26344", "medium", "Perseverance’s selfie next to the “Cheyava Falls” rock (July 2024)", "Perseverance rover"],

@@ -124,7 +124,8 @@
   const ssc = scene.screenSpaceCameraController;
   ssc.minimumZoomDistance = 120;          // meters — close enough for HiRISE detail
   ssc.maximumZoomDistance = 75000000;
-  ssc.inertiaSpin = 0.85; ssc.inertiaZoom = 0.6;
+  ssc.inertiaSpin = 0.85; ssc.inertiaZoom = 0.8;
+  ssc.zoomFactor = 15;                    // fast pinch zoom (Cesium's default is 5)
   viewer.cesiumWidget.creditContainer.style.display = "block";
 
   /* ------------------------------------------------------------
@@ -519,8 +520,8 @@
   // Same link format NASA's image library uses itself (it needs the year range to search)
   const galleryUrl = (q) => "https://images.nasa.gov/search?media=image&page=1&q=" + encodeURIComponent(q).replace(/%20/g, "+") +
     "&yearEnd=" + new Date().getFullYear() + "&yearStart=1920";
-  function heroPhoto(p) {
-    const ph = PHOTOS[p.id];
+  function heroPhoto(p, override, artMode) {
+    const ph = override || PHOTOS[p.id];
     if (!ph) {
       const q = PHOTO_SEARCH[p.id];
       return q ? '<p class="more-photos"><a href="' + esc(galleryUrl(q)) + '" target="_blank" rel="noopener">' + ICON_PHOTO + "See photos in NASA’s image library</a></p>" : "";
@@ -528,7 +529,7 @@
     const nid = ph[0], size = ph[1] || "medium", cap = ph[2] || p.name, q = ph[3] || p.name, art = !!ph[4];
     const base = "https://images-assets.nasa.gov/image/" + nid + "/" + nid;
     const fallbacks = ["~small.jpg", "~orig.jpg"].map((x) => base + x).filter((u) => u !== base + "~" + size + ".jpg");
-    return '<figure class="hero">' +
+    return '<figure class="hero' + (override || artMode ? " art" : "") + '">' +
       '<a class="hero-img" href="https://images.nasa.gov/details/' + encodeURIComponent(nid) + '" target="_blank" rel="noopener" aria-label="Open this picture on NASA’s website">' +
       '<img src="' + base + "~" + size + '.jpg" data-fallback="' + fallbacks.join("|") + '" alt="' + esc(cap) + '" onload="this.closest(\'figure\').classList.add(\'loaded\')" onerror="marsPhotoFail(this)"></a>' +
       "<figcaption><span>" + (art ? "<b>Artist’s drawing.</b> " : "") + esc(cap) + "</span>" +
@@ -545,6 +546,50 @@
     if (fig.classList.contains("hero")) fig.classList.add("failed");
     else fig.remove();
   };
+
+  /* "Typical temperatures at this location" box (numbers live in js/data/temps.js) */
+  function fmtF(n) { return (n < 0 ? "−" : "") + Math.abs(Math.round(n)) + "°F"; }
+  function tempBlock(p) {
+    const orbit = p.type === "orbiter";
+    const T = orbit ? window.MARS_TEMPS_ORBIT : (window.MARS_TEMPS || {})[p.id];
+    if (!T || typeof T.hi !== "number" || typeof T.lo !== "number") return "";
+    const home = window.MARS_TEMPS_HOME || { city: "Chicago", recordLow: -27 };
+    const MIN = -210, MAX = 50;
+    const pos = (f) => Math.max(0, Math.min(100, ((f - MIN) / (MAX - MIN)) * 100));
+    const est = !orbit && T.how !== "measured";
+    const hiLabel = orbit ? "Warmest below" : (T.hiLabel || "Afternoon high");
+    const loLabel = orbit ? "Coldest below" : (T.loLabel || "Night low");
+    let h = '<section class="temps">';
+    h += "<h3>" + (orbit ? "Temperatures on the planet below" : "Typical temperatures at this location") + "</h3>";
+    h += '<div class="temp-pair">' +
+      '<div class="temp warm"><span class="t-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></span><b>' + (est ? "<i>about</i>" : "") + fmtF(T.hi) + "</b><small>" + esc(hiLabel) + "</small></div>" +
+      '<div class="temp cold"><span class="t-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></span><b>' + (est ? "<i>about</i>" : "") + fmtF(T.lo) + "</b><small>" + esc(loLabel) + "</small></div>" +
+      "</div>";
+    h += '<div class="thermo" aria-hidden="true"><div class="thermo-track">' +
+      '<span class="thermo-range" style="left:' + pos(T.lo) + "%;right:" + (100 - pos(T.hi)) + '%"></span>' +
+      '<span class="thermo-tick" style="left:' + pos(32) + '%"></span>' +
+      '<span class="thermo-tick earth-low" style="left:' + pos(-128.6) + '%"></span>' +
+      '</div><div class="thermo-labels">' +
+      '<span style="left:' + pos(-128.6) + '%">Earth’s coldest ever<br>−129°F</span>' +
+      '<span class="r" style="left:' + pos(32) + '%">Water freezes<br>32°F</span>' +
+      "</div></div>";
+    const lines = [];
+    if (!orbit) {
+      const when = T.loLabel ? "The coldest times here are" : "Nights here are";
+      if (T.lo <= -129) lines.push(when + " colder than the coldest temperature ever measured on Earth (−129°F in Antarctica).");
+      else lines.push(when + " nearly as cold as the coldest temperature ever measured on Earth (−129°F in Antarctica).");
+      if (T.hi >= 32) lines.push("On the warmest afternoons it can get just above freezing.");
+      else if (T.hi >= home.recordLow) lines.push("Even the warm part of the day feels like a freezing winter day in " + home.city + ".");
+      else lines.push("Even the warmest part of the day is colder than " + home.city + "’s coldest day ever (" + fmtF(home.recordLow) + ").");
+      if (p.type !== "moon" && T.hi - T.lo >= 60 && !T.hiLabel) {
+        lines.push("That’s a drop of about " + (Math.round((T.hi - T.lo) / 10) * 10) + "°F from afternoon to night. Mars’ thin air can’t hold on to the day’s heat.");
+      }
+    }
+    if (lines.length) h += '<p class="temp-cmp">' + lines.map(esc).join(" ") + "</p>";
+    h += '<p class="temp-src"><span class="tag ' + (est ? "est" : "meas") + '">' + (orbit ? "Planet-wide" : est ? "Estimate" : "Measured") + "</span>" + esc(T.src || "") + "</p>";
+    h += "</section>";
+    return h;
+  }
 
   function showCard(html, badgeType, badgeText, badgeColor) {
     $("#cardBadge").innerHTML = '<img src="' + icon(badgeType, badgeColor) + '" alt="">' + esc(badgeText);
@@ -563,7 +608,8 @@
     selected = m;
     if (m.kind === "stop") return openStop(m.obj, opts);
     const p = m.obj, t = TYPES[p.type];
-    let html = heroPhoto(p);
+    let html = heroPhoto(p, opts.tourPhoto, opts.tourArt);
+    if (opts.tourStory) html += '<div class="photo-story"><h3>Why this photo is special</h3><p>' + esc(opts.tourStory) + "</p></div>";
     html += "<h2>" + esc(p.name) + "</h2>";
     html += '<p class="short">' + esc(p.short) + "</p>";
     html += p.body.map((b) => "<p>" + esc(b) + "</p>").join("");
@@ -576,6 +622,7 @@
     if (p.facts && p.facts.length) {
       html += '<dl class="facts">' + p.facts.map((f) => "<dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd>").join("") + "</dl>";
     }
+    try { html += tempBlock(p); } catch (e) { /* never let the temperature box break a card */ }
     if (p.earth) {
       const heading = t.group === "landforms" ? "Compare it with Earth" : "Earth connection";
       html += '<div class="earth">' + EARTH_SVG + "<div><h3>" + heading + "</h3><p>" + esc(p.earth) + "</p></div></div>";
@@ -702,7 +749,11 @@
   }
   function showTourStop() {
     const id = tour.t.stops[tour.i];
-    openPlace(id);
+    openPlace(id, {
+      tourPhoto: tour.t.photos && tour.t.photos[id],
+      tourStory: tour.t.stories && tour.t.stories[id],
+      tourArt: !!tour.t.stories
+    });
   }
   function updateTourBar() {
     $("#tourProgress").innerHTML = esc(tour.t.name) + "<br>Stop " + (tour.i + 1) + " of " + tour.t.stops.length;
@@ -924,6 +975,44 @@
   });
   $("#searchClear").onclick = () => { $("#searchInput").value = ""; renderSearch(); $("#searchInput").focus(); };
   renderSearch();
+
+  /* ------------------------------------------------------------
+     Mars right now (status box)
+     ------------------------------------------------------------ */
+  (function marsStatus() {
+    const MC = window.MarsClock;
+    if (!MC) { $("#status").hidden = true; return; }
+    const fmt = (n) => Math.round(n).toLocaleString("en-US");
+    const pad = (n) => String(n).padStart(2, "0");
+    function update() {
+      const now = new Date();
+      const h = MC.mtcHours(now);
+      const clock = pad(Math.floor(h)) + ":" + pad(Math.floor((h % 1) * 60));
+      $("#stMtc").textContent = clock; $("#stMtc2").textContent = clock + " MTC";
+      $("#stMsd").textContent = "Sol " + Math.floor(MC.marsSolDate(now)).toLocaleString("en-US");
+      const km = MC.earthMarsKm(now);
+      const mkm = km / 1e6, mmi = km / 1.609344 / 1e6;
+      $("#stDistShort").textContent = fmt(mmi) + " million mi";
+      $("#stDist").textContent = fmt(mmi) + " million miles (" + fmt(mkm) + " million km)";
+      const mins = MC.lightMinutes(km);
+      $("#stLight").textContent = "About " + Math.round(mins) + " minutes";
+      $("#stPerse").textContent = "Sol " + MC.roverSol(now, "2021-02-18T20:55:00Z", 77.45).toLocaleString("en-US");
+      $("#stCurio").textContent = "Sol " + MC.roverSol(now, "2012-08-06T05:17:57Z", 137.44).toLocaleString("en-US");
+      const ls = MC.solarLongitude(now), s = MC.seasons(ls);
+      $("#stSeason").textContent = s.north[0].toUpperCase() + s.north.slice(1) + " in the north";
+      $("#stSeasonText").textContent = "It’s " + s.north + " in Mars’ northern half and " + s.south + " in the southern half, in Mars Year " +
+        MC.marsYear(now) + ". Mars is tilted like Earth, so it has seasons, but a Mars year lasts 687 Earth days, so each season is about twice as long as ours.";
+    }
+    update();
+    setInterval(update, 5000);
+    const setOpen = (open) => {
+      $("#statusMore").hidden = !open;
+      $("#status").classList.toggle("open", open);
+      $("#statusToggle").setAttribute("aria-expanded", String(open));
+      $("#statusMoreLabel").textContent = open ? "Less" : "More";
+    };
+    $("#statusToggle").onclick = () => setOpen($("#statusMore").hidden);
+  })();
 
   // First-visit help
   if (CFG.showHelpOnFirstVisit && !store.get("mars-help-seen")) openPanel("help");

@@ -533,6 +533,60 @@
     earth: "On Earth, carbon dioxide never freezes naturally — it is too warm. On Mars, the poles get cold enough (below −125 °C).",
     video: S("Mars south pole spiders")
   },
+  {
+    id: "spiders", name: "“Spiders” of the South Pole", type: "ice",
+    lat: -79.4, lon: 18.8, view: 700, rank: 3,
+    short: "Spidery shapes carved by bursting jets of gas every spring.",
+    body: [
+      "Near Mars’ south pole, the ground is covered with dark, branching shapes that look like giant spiders. Scientists call them araneiforms, which means “spider-shaped.”",
+      "In winter, a layer of carbon dioxide ice (dry ice) covers the ground. In spring, sunlight shines through the clear ice and warms the soil underneath. The bottom of the ice turns into gas, and the trapped gas bursts out through cracks like a geyser, carrying dark dust with it.",
+      "Year after year, the escaping gas carves branching channels into the ground — the “legs” of the spiders."
+    ],
+    facts: [["Made by", "Jets of carbon dioxide gas"], ["When", "Every southern spring"], ["Size", "Tens of meters to about 1 km across"]],
+    earth: "Nothing like this happens naturally on Earth, because Earth never gets cold enough for dry ice to form. In 2016, about 10,000 volunteers helped NASA pick the best spider spots to photograph — anyone can help with real Mars science.",
+    video: S("Mars spiders south pole")
+  },
+  {
+    id: "avalanche", name: "North Polar Avalanche Cliffs", type: "ice",
+    lat: 83.74, lon: -124.22, view: 500, rank: 3,
+    short: "Steep ice cliffs where an orbiter caught avalanches happening.",
+    body: [
+      "At the edge of the north polar ice cap, the layered ice ends in cliffs more than 700 meters tall, with slopes steeper than 60 degrees.",
+      "On February 19, 2008, Mars Reconnaissance Orbiter’s HiRISE camera happened to photograph at least four avalanches falling down these cliffs at the same moment. The clouds of dust and ice look like puffs of smoke at the bottom of the cliff.",
+      "Scientists aren’t sure what sets them off. Ideas include frost disappearing in spring, ice cracking as it warms and cools, or a marsquake."
+    ],
+    facts: [["Cliff height", "Over 700 m (2,300 ft)"], ["Biggest dust cloud", "About 180 m across"], ["Photographed", "February 19, 2008, in northern spring"]],
+    earth: "On Earth, avalanches on steep mountain slopes are often set off by warming in spring — Mars’ polar cliffs may work in a similar way.",
+    video: S("Mars avalanche HiRISE")
+  },
+
+  /* Landforms added for the photo tour */
+  {
+    id: "galle", name: "Galle Crater (the “Happy Face”)", type: "crater",
+    lat: -51.0, lon: -30.9, view: 1200, rank: 3,
+    short: "A big crater that looks like a smiley face from space.",
+    body: [
+      "Galle Crater is about 230 km wide. A curved line of hills inside it, plus a couple of small spots, make it look like a smiling face when you see it from orbit.",
+      "The “smile” is part of a peak ring — a ring of hills pushed up when a giant space rock slammed into the ground, a bit like the splash when you drop a rock into mud.",
+      "The crater is named after Johann Galle, the German astronomer who first saw the planet Neptune in 1846. Seeing faces in random shapes is called pareidolia — the same reason people saw a “face” in Cydonia."
+    ],
+    facts: [["Width", "About 230 km (140 mi)"], ["Location", "On the eastern rim of the Argyre Basin"], ["Named for", "Astronomer Johann Galle"]],
+    earth: "Canada’s Manicouagan crater, about 100 km wide, is one of Earth’s largest impact craters you can still see from space. Galle is more than twice as wide.",
+    video: S("Mars impact craters")
+  },
+  {
+    id: "dustdevil", name: "Dust Devil Alley (Amazonis Planitia)", type: "region",
+    lat: 35.82, lon: -152.52, view: 600, rank: 3,
+    short: "Flat plains where whirling dust devils dance across the ground.",
+    body: [
+      "Amazonis Planitia is a smooth, flat plain in Mars’ northern hemisphere. On sunny spring and summer afternoons, the ground heats up and warm air spirals upward, making whirlwinds called dust devils.",
+      "On February 16, 2012, the HiRISE camera on Mars Reconnaissance Orbiter photographed a dust devil here that rose more than 800 meters high while being only about 30 meters wide. Its long, curving shadow made it look like a giant serpent.",
+      "Dust devils leave dark, crisscrossing tracks where they sweep away the brighter dust. They have also helped solar-powered rovers by blowing dust off their solar panels."
+    ],
+    facts: [["Tallest one photographed here", "More than 800 m (half a mile)"], ["Width", "About 30 m"], ["When they form", "Sunny spring and summer afternoons"]],
+    earth: "Dust devils on Earth form the same way, over hot deserts like those in Arizona — but most are much smaller than the ones on Mars.",
+    video: S("Mars dust devil")
+  },
 
   /* ================================================================
      ROVERS
@@ -1030,6 +1084,35 @@
      GUIDED TOURS — lists of place ids, shown in order
      ================================================================ */
   window.MARS_TOURS = [
+    /* Photo tour: each stop shows its own special photo and a short story.
+       photos: placeId -> ["NASA_ID", "size", "Caption"]  (same format as js/data/photos.js)
+       stories: placeId -> why this photo is special */
+    { id: "photos", name: "Mars’ Most Beautiful Photos", icon: "📸",
+      blurb: "Some of the most admired pictures ever taken by rovers and orbiters. Tap any photo to see it full size.",
+      stops: ["valles", "gale", "sharp", "dustdevil", "avalanche", "russell", "galle", "spiders", "southcap", "victoria", "opportunity", "phobos"],
+      photos: {
+        gale:        ["PIA19400", "orig", "Sunset in Gale Crater, photographed by Curiosity (April 15, 2015)"],
+        sharp:       ["PIA21042", "orig", "Tilted buttes and layered rock at Murray Buttes, photographed by Curiosity (2016)"],
+        southcap:    ["PIA22895", "medium", "“Swiss cheese” pits in the dry ice of the south polar cap, photographed by HiRISE"],
+        victoria:    ["PIA08813", "medium", "Victoria Crater from above, photographed by HiRISE in 2006, soon after Opportunity arrived at its rim"],
+        opportunity: ["PIA22074", "medium", "Opportunity’s own wheel tracks winding down Perseverance Valley, on the rim of Endeavour Crater (2017)"],
+        phobos:      ["PIA10368", "medium", "Phobos in color, photographed by HiRISE from 6,800 km away (2008)"]
+      },
+      stories: {
+        valles: "One of the most famous portraits of Mars ever made. Scientists stitched together 102 photos from the Viking 1 orbiter to show Valles Marineris slashing across the planet like a giant scar.",
+        gale: "On Mars, sunsets are blue! Fine dust in the air lets blue light pass straight through toward your eyes near the Sun, while other colors get scattered away. On Earth it’s the opposite — our sunsets glow orange and red.",
+        sharp: "Curiosity took this picture of the Murray Buttes as it said goodbye to them in 2016. These flat-topped hills are made of sandstone that was once sand dunes — the slanted lines are the dunes’ old slopes, frozen in rock.",
+        dustdevil: "This is one of the most famous orbiter photos ever taken. The dust devil is only about 30 m wide, but it towers more than 800 m high — the late-afternoon Sun stretches its shadow across the plain like a serpent.",
+        avalanche: "Pure luck! HiRISE photographs only a tiny part of Mars at a time, yet in 2008 it caught at least four avalanches falling down these 700-meter ice cliffs at the very same moment.",
+        russell: "Each spring, the frost on these giant dunes turns back into gas, leaving dark streaks and spots. The result looks more like an abstract painting than a planet.",
+        galle: "Mars is smiling at you! This 230 km crater has hills and spots in just the right places to look like a happy face. Here, frost on its slopes makes the smile stand out in early spring.",
+        spiders: "These “spiders” are carved by jets of gas bursting out from under the ice each spring. About 10,000 volunteers helped NASA choose spots like this one to photograph.",
+        southcap: "The south polar cap is covered with dry ice full of round pits, so it looks like Swiss cheese. The pits slowly grow bigger as the dry ice turns into gas.",
+        victoria: "HiRISE took this picture in 2006, while Opportunity was parked on the rim — the camera is sharp enough that scientists could spot the rover in the full-size version. The scalloped edge of bays and cliffs formed as the rim slowly crumbled and wind wore it away, and sand dunes fill the crater floor.",
+        opportunity: "Look for the rover’s own wheel tracks running between the bright patches of rock. This was one of Opportunity’s last big panoramas. Less than a year later, a planet-wide dust storm blocked the sunlight its solar panels needed, and the rover fell silent in June 2018, after more than 14 years of exploring.",
+        phobos: "A close-up of Mars’ biggest moon, in color. The giant crater near the lower right is Stickney Crater, about 9 km wide. The long grooves and chains of small craters may have been made by debris blasted off Mars when space rocks hit it."
+      }
+    },
     { id: "water", name: "Canyons, Channels & Craters", icon: "💧",
       blurb: "Compare Mars’ landforms with Earth’s and look for clues of ancient water.",
       stops: ["valles", "noctis", "kasei", "ares", "nanedi", "warrego", "maadim", "eberswalde", "jezero", "gale", "hellas", "victoria", "korolev"] },
@@ -1045,5 +1128,6 @@
     { id: "humans", name: "Where Will Humans Land?", icon: "🧑‍🚀",
       blurb: "Visit places scientists have studied for the first astronauts on Mars.",
       stops: ["arcadia", "erebus", "phlegra", "meridiani"] }
+
   ];
 })();

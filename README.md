@@ -43,6 +43,8 @@ This folder is small: about 20 files. The big 3D globe engine (CesiumJS) loads f
 | The big photo on each card | `js/data/photos.js`. Swap in any picture ID from images.nasa.gov. |
 | Rover photo and discovery dots | `js/data/places.js`, the section called `ROVER_STOPS` |
 | Guided tours (which stops, in what order) | `js/data/places.js`, the section called `MARS_TOURS` |
+| Photos and stories in the "Most Beautiful Photos" tour | `js/data/places.js`, the first tour in `MARS_TOURS` (`photos` and `stories`) |
+| Typical temperatures on each card (°F), and the hometown used for comparisons | `js/data/temps.js` |
 | Title, starting view, map picture sources | `js/config.js` |
 | Colors and fonts | `css/app.css` |
 
@@ -102,6 +104,10 @@ Videos marked *Direct video* go straight to one specific video. The others open 
 | Victoria Crater | Search of @NASAJPL for "Opportunity Victoria crater" | https://www.youtube.com/@NASAJPL/search?query=Opportunity%20Victoria%20crater |
 | Eberswalde Delta | Search of @NASAJPL for "Mars river delta" | https://www.youtube.com/@NASAJPL/search?query=Mars%20river%20delta |
 | Huygens Crater | Search of @NASAJPL for "impact craters Mars" | https://www.youtube.com/@NASAJPL/search?query=impact%20craters%20Mars |
+| Galle Crater (the “Happy Face”) | Search of @NASAJPL for "Mars impact craters" | https://www.youtube.com/@NASAJPL/search?query=Mars%20impact%20craters |
+| Dust Devil Alley (Amazonis Planitia) | Search of @NASAJPL for "Mars dust devil" | https://www.youtube.com/@NASAJPL/search?query=Mars%20dust%20devil |
+| “Spiders” of the South Pole | Search of @NASAJPL for "Mars spiders south pole" | https://www.youtube.com/@NASAJPL/search?query=Mars%20spiders%20south%20pole |
+| North Polar Avalanche Cliffs | Search of @NASAJPL for "Mars avalanche HiRISE" | https://www.youtube.com/@NASAJPL/search?query=Mars%20avalanche%20HiRISE |
 | Schiaparelli Crater | Search of @EuropeanSpaceAgency for "Schiaparelli crater Mars" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Schiaparelli%20crater%20Mars |
 | Lyot Crater | Search of @NASAJPL for "Mars craters ice" | https://www.youtube.com/@NASAJPL/search?query=Mars%20craters%20ice |
 | Korolev Crater | Search of @EuropeanSpaceAgency for "Korolev crater" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Korolev%20crater |

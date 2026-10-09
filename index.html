@@ -53,6 +53,36 @@
     <button class="dock-btn" data-panel="search"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg><span>Search</span></button>
   </nav>
 
+  <!-- Mars right now (status box, bottom right) -->
+  <aside class="status" id="status" aria-label="Mars right now">
+    <button class="status-head" id="statusToggle" aria-expanded="false" aria-controls="statusMore">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="status-title">Mars right now</span>
+      <span class="status-more-label" id="statusMoreLabel">More</span>
+      <svg class="status-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+    </button>
+    <div class="status-grid">
+      <div class="stat"><span class="stat-label">Mars clock</span><b id="stMtc">--:--</b></div>
+      <div class="stat"><span class="stat-label">Distance from Earth</span><b id="stDistShort">…</b></div>
+    </div>
+    <div class="status-more" id="statusMore" hidden>
+      <div class="srow"><div class="srow-top"><span>Mars clock</span><b id="stMtc2">--:--</b></div>
+        <p>The time right now at Mars’ “Greenwich” line (its prime meridian). Scientists call it Coordinated Mars Time, or MTC.</p></div>
+      <div class="srow"><div class="srow-top"><span>Mars day number</span><b id="stMsd">…</b></div>
+        <p>A Mars day is called a <b>sol</b>. It lasts 24 hours and 40 minutes. This counts every sol since December 29, 1873, like a calendar for Mars.</p></div>
+      <div class="srow"><div class="srow-top"><span>Distance from Earth</span><b id="stDist">…</b></div>
+        <p>Earth and Mars both travel around the Sun at different speeds, so this changes every day, from about 55 million to 400 million km.</p></div>
+      <div class="srow"><div class="srow-top"><span>Message travel time</span><b id="stLight">…</b></div>
+        <p>How long a radio message, moving at the speed of light, takes to get from Earth to Mars. That’s why rovers can’t be driven with a joystick!</p></div>
+      <div class="srow"><div class="srow-top"><span>Perseverance</span><b id="stPerse">…</b></div>
+        <div class="srow-top"><span>Curiosity</span><b id="stCurio">…</b></div>
+        <p>How many sols each rover has been exploring. A rover’s landing day is its sol 0.</p></div>
+      <div class="srow"><div class="srow-top"><span>Season</span><b id="stSeason">…</b></div>
+        <p id="stSeasonText">…</p></div>
+      <p class="status-note">Calculated live on this device from NASA’s formulas for Mars time and planet orbits.</p>
+    </div>
+  </aside>
+
   <!-- "Showing only search results" bar -->
   <div class="focusbar" id="focusBar" hidden>
     <span id="focusText"></span>
@@ -167,6 +197,8 @@
   <script src="js/data/places.js"></script>
   <script src="js/data/traverses.js"></script>
   <script src="js/data/photos.js"></script>
+  <script src="js/data/temps.js"></script>
+  <script src="js/marsclock.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
