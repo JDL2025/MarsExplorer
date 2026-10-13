@@ -508,11 +508,15 @@
       return '<a class="act video" href="' + esc(v.url) + '" target="_blank" rel="noopener">' + ICON_PLAY +
         '<span>Watch the video<small>' + esc(v.title) + (v.by ? " (" + esc(v.by) + (v.len ? ", " + esc(v.len) : "") + ")" : "") + "</small></span></a>";
     }
-    const q = encodeURIComponent(v.search);
-    const url = v.ch ? "https://www.youtube.com/" + v.ch + "/search?query=" + q : "https://www.youtube.com/results?search_query=" + q;
-    const who = v.ch === "@NASAJPL" ? "NASA JPL" : v.ch === "@EuropeanSpaceAgency" ? "European Space Agency" : v.ch === "@NASA" ? "NASA" : "YouTube";
+    // General YouTube search: the place's name (without notes in parentheses), plus "Mars" if the name doesn't say it
+    let q = v.search;
+    if (!q) {
+      q = String(name).replace(/\s*\([^)]*\)/g, "").replace(/[“”"]/g, "").replace(/\s*\/\s*/g, " ").trim();
+      if (!/mars/i.test(q)) q += " Mars";
+    }
+    const url = "https://www.youtube.com/results?search_query=" + encodeURIComponent(q).replace(/%20/g, "+");
     return '<a class="act video" href="' + esc(url) + '" target="_blank" rel="noopener">' + ICON_PLAY +
-      "<span>Find videos<small>" + (v.ch ? who + " videos about " : "Videos about ") + esc(v.search) + "</small></span></a>";
+      "<span>Find videos<small>Search YouTube for “" + esc(q) + "”</small></span></a>";
   }
   function photoFigure(pia, alt) {
     if (!pia) return "";

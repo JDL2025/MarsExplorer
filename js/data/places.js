@@ -17,22 +17,23 @@
      body: ["Paragraph 1", "Paragraph 2"],
      facts: [["Label","Value"], ...],
      earth: "Compare-to-Earth sentence (landforms)",
-     video: V(...) or S(...),     // see helpers below
+     video: V(...) or SEARCH,     // see VIDEOS below
      link: { label: "...", url: "https://..." }   // optional "learn more"
    }
 
-   VIDEOS
-   V(id, title, channel, length)  -> links straight to one YouTube video
-   S("search words", "@Channel")  -> opens that official channel's video
-                                     search on YouTube (NASA JPL by default)
-   To use your own favorite video, replace S(...) with V("VIDEO_ID", "Title",
-   "Channel", "2:30"). The VIDEO_ID is the part after "watch?v=" in a link.
+   VIDEOS — two kinds of video button
+   V(id, title, channel)  -> "Watch the video": links straight to one YouTube video.
+                             The id is the part after "watch?v=" in a YouTube link.
+   SEARCH                 -> "Find videos": opens a regular YouTube search for the
+                             place's name, so students can scroll the results.
+   S("search words")      -> same as SEARCH, but searches YouTube for your own words.
+   To give a place its own video, replace SEARCH with V("VIDEO_ID", "Title", "Channel").
    ===================================================================== */
 
 (function () {
   const V = (id, title, by, len) => ({ url: "https://www.youtube.com/watch?v=" + id, title, by, len });
-  const S = (q, ch) => ({ search: q, ch: ch === undefined ? "@NASAJPL" : ch });
-  const ESA = "@EuropeanSpaceAgency";
+  const S = (q) => ({ search: q });          // YouTube search for your own words
+  const SEARCH = { searchName: true };      // YouTube search for the place's name
 
   window.MARS_PLACES = [
 
@@ -50,7 +51,7 @@
     ],
     facts: [["Height", "About 22 km (72,000 ft)"], ["Width", "About 600 km (370 mi)"], ["Summit crater (caldera)", "About 80 km across, 3 km deep"], ["Edge cliffs", "Up to 8 km tall"]],
     earth: "Hawaii’s Mauna Loa is the biggest shield volcano on Earth, about 9 km tall from the sea floor. Olympus Mons is more than twice as tall and about as wide as the state of Arizona.",
-    video: S("Olympus Mons")
+    video: V("Nug6iuKowRk", "The Biggest Volcano in the Solar System", "SciShow Space")
   },
   {
     id: "ascraeus", name: "Ascraeus Mons", type: "volcano",
@@ -62,7 +63,7 @@
     ],
     facts: [["Height", "About 18 km above average surface level"], ["Type", "Shield volcano"], ["Neighbors", "Pavonis Mons and Arsia Mons, in a straight line"]],
     earth: "On Earth, volcanoes in a line often form as a crustal plate slides over a hot spot — that is how the Hawaiian Islands formed. Scientists still debate exactly why the three Tharsis volcanoes line up.",
-    video: S("Tharsis volcanoes Mars")
+    video: SEARCH
   },
   {
     id: "pavonis", name: "Pavonis Mons", type: "volcano",
@@ -74,7 +75,7 @@
     ],
     facts: [["Height", "About 14 km above average surface level"], ["Type", "Shield volcano"], ["Location", "On the equator"]],
     earth: "Lava tubes are common on Earth too. You can walk through them in Hawaii and at Lava Beds National Monument in California.",
-    video: S("Mars lava tubes caves")
+    video: SEARCH
   },
   {
     id: "arsia", name: "Arsia Mons", type: "volcano",
@@ -86,7 +87,7 @@
     ],
     facts: [["Height", "About 17 km above average surface level"], ["Caldera", "About 110 km across"], ["Type", "Shield volcano"]],
     earth: "Arsia Mons’ summit caldera alone is about three-quarters as wide as the entire Big Island of Hawaii (about 150 km).",
-    video: S("Arsia Mons")
+    video: SEARCH
   },
   {
     id: "alba", name: "Alba Mons", type: "volcano",
@@ -98,7 +99,7 @@
     ],
     facts: [["Height", "About 6.8 km"], ["Size", "About 2,000 km by 3,000 km"], ["Record", "Largest volcano on Mars by area"]],
     earth: "Alba Mons would cover most of the western United States.",
-    video: S("Alba Mons")
+    video: SEARCH
   },
   {
     id: "elysium", name: "Elysium Mons", type: "volcano",
@@ -110,7 +111,7 @@
     ],
     facts: [["Height", "About 12.6 km above the plains around it"], ["Type", "Volcano"], ["Region", "Elysium Planitia"]],
     earth: "Elysium Mons is about 3 times as tall as Mount Rainier in Washington State is above sea level.",
-    video: S("Elysium Mars volcano")
+    video: SEARCH
   },
 
   /* ================================================================
@@ -127,7 +128,7 @@
     ],
     facts: [["Length", "About 4,000 km (2,500 mi)"], ["Depth", "Up to about 7 km"], ["Width", "Up to about 200 km"], ["Formed by", "Cracking of the crust, then landslides and erosion"]],
     earth: "Put on Earth, Valles Marineris would stretch from New York City to Los Angeles. The Grand Canyon (about 450 km long and 1.8 km deep) would fit inside one of its side canyons.",
-    video: S("Valles Marineris")
+    video: V("srQXLrsfVxI", "Fly over the ‘Grand Canyon’ of Mars in high-resolution orbiter imagery", "Space.com")
   },
   {
     id: "noctis", name: "Noctis Labyrinthus", type: "canyon",
@@ -139,7 +140,7 @@
     ],
     facts: [["Meaning of name", "Labyrinth of the Night"], ["Formed by", "Cracking and sinking of the crust"], ["Connects to", "Valles Marineris"]],
     earth: "Earth has valleys formed by blocks of crust dropping between faults — like Death Valley in California — but nothing that forms a giant maze like this.",
-    video: S("Noctis Labyrinthus", ESA)
+    video: SEARCH
   },
 
   /* ================================================================
@@ -156,7 +157,7 @@
     ],
     facts: [["Length", "More than 1,500 km (930 mi)"], ["Depth", "Up to 2–3 km"], ["Type", "Outflow (flood) channel"], ["Drains into", "Chryse Planitia"]],
     earth: "Washington State’s Channeled Scablands were carved by giant Ice Age floods when a glacier dam broke. They have the same streamlined islands seen in Kasei Valles — but Kasei is far bigger.",
-    video: S("Kasei Valles", ESA)
+    video: SEARCH
   },
   {
     id: "ares", name: "Ares Vallis", type: "channel",
@@ -168,7 +169,7 @@
     ],
     facts: [["Type", "Outflow (flood) channel"], ["Visited by", "Mars Pathfinder & Sojourner (1997)"], ["Drains into", "Chryse Planitia"]],
     earth: "On Earth, rocks that pile up and lean in the same direction (called imbrication) tell geologists which way a flood flowed. Pathfinder saw rocks like this on Mars.",
-    video: S("Mars Pathfinder Ares Vallis")
+    video: SEARCH
   },
   {
     id: "nanedi", name: "Nanedi Valles", type: "channel",
@@ -180,7 +181,7 @@
     ],
     facts: [["Length", "About 500 km (315 mi)"], ["Width", "Up to about 4 km"], ["Key clue", "Inner channel = longer-lasting flow"]],
     earth: "Rivers like the San Juan River at Goosenecks State Park in Utah carved deep, winding meanders like these.",
-    video: S("water on Mars river valleys")
+    video: SEARCH
   },
   {
     id: "maadim", name: "Ma’adim Vallis", type: "channel",
@@ -192,7 +193,7 @@
     ],
     facts: [["Length", "About 700 km"], ["Connects to", "Gusev Crater"], ["Name", "“Ma’adim” is Hebrew for Mars"]],
     earth: "Ma’adim Vallis is about as long as the distance from Chicago to Pittsburgh.",
-    video: S("Spirit rover Gusev crater")
+    video: SEARCH
   },
   {
     id: "warrego", name: "Warrego Valles", type: "channel",
@@ -204,7 +205,7 @@
     ],
     facts: [["Type", "Valley network"], ["Pattern", "Branching (dendritic)"], ["Age", "Very old — billions of years"]],
     earth: "The Mississippi River system has thousands of branching streams that feed into it. Warrego Valles has the same branching pattern on a smaller scale.",
-    video: S("Mars valley networks rain")
+    video: SEARCH
   },
   {
     id: "mawrth", name: "Mawrth Vallis", type: "channel",
@@ -216,7 +217,7 @@
     ],
     facts: [["Type", "Ancient valley"], ["Special minerals", "Clays"], ["Why it matters", "Clays form in water"]],
     earth: "On Earth, clay forms at the bottoms of lakes and in wet soils. Potters use it to make pottery!",
-    video: S("Mars clay minerals water")
+    video: SEARCH
   },
 
   /* ================================================================
@@ -233,7 +234,7 @@
     ],
     facts: [["Width", "About 45 km (28 mi)"], ["Ancient lake", "Yes — filled by a river"], ["Visited by", "Perseverance & Ingenuity (landed 2021)"]],
     earth: "Jezero is about as wide as the city of Chicago is long. Its delta formed the same way the Mississippi River Delta is forming in Louisiana today.",
-    video: S("Jezero crater")
+    video: V("qnZ_sidmr4Y", "Mars 2020 Landing Site: Jezero Crater Flyover", "NASA JPL")
   },
   {
     id: "gale", name: "Gale Crater", type: "crater",
@@ -245,7 +246,7 @@
     ],
     facts: [["Width", "About 154 km (96 mi)"], ["Central mountain", "Mount Sharp, about 5.5 km tall"], ["Visited by", "Curiosity (landed 2012)"]],
     earth: "Gale Crater is a little wider than the distance from Chicago to Milwaukee. Mount Sharp is taller than any mountain in the lower 48 U.S. states.",
-    video: S("Gale crater Curiosity")
+    video: V("LwfJQa7vaGw", "NASA’s Curiosity Rover Turns 10: Here’s What It’s Learned", "NASA JPL")
   },
   {
     id: "sharp", name: "Mount Sharp (Aeolis Mons)", type: "region",
@@ -257,7 +258,7 @@
     ],
     facts: [["Height", "About 5.5 km above the crater floor"], ["Made of", "Layers of sedimentary rock"], ["Official name", "Aeolis Mons"]],
     earth: "The layers of the Grand Canyon also record Earth’s history, with the oldest rocks at the bottom.",
-    video: S("Curiosity Mount Sharp layers")
+    video: V("xtDpWGF16po", "Curiosity Rover’s Most Challenging Climb Yet", "NASA JPL")
   },
   {
     id: "gusev", name: "Gusev Crater", type: "crater",
@@ -269,7 +270,7 @@
     ],
     facts: [["Width", "About 166 km"], ["Visited by", "Spirit rover (2004–2010)"], ["Big find", "Signs of ancient hot springs"]],
     earth: "Yellowstone’s hot springs and geysers deposit silica, the same mineral Spirit found in Gusev Crater.",
-    video: S("Spirit rover")
+    video: SEARCH
   },
   {
     id: "endeavour", name: "Endeavour Crater", type: "crater",
@@ -281,7 +282,7 @@
     ],
     facts: [["Width", "About 22 km (14 mi)"], ["Visited by", "Opportunity (2011–2018)"], ["Big find", "Gypsum veins left by water"]],
     earth: "Endeavour Crater is about as wide as Manhattan Island is long.",
-    video: S("Opportunity rover Endeavour crater")
+    video: SEARCH
   },
   {
     id: "victoria", name: "Victoria Crater", type: "crater",
@@ -293,7 +294,7 @@
     ],
     facts: [["Width", "About 800 m (half a mile)"], ["Depth", "About 70 m"], ["Visited by", "Opportunity (2006–2008)"]],
     earth: "Victoria is a little smaller than Meteor Crater in Arizona, which is about 1.2 km wide.",
-    video: S("Opportunity Victoria crater")
+    video: SEARCH
   },
   {
     id: "eberswalde", name: "Eberswalde Delta", type: "channel",
@@ -305,7 +306,7 @@
     ],
     facts: [["Type", "River delta"], ["Found in", "Eberswalde Crater"], ["Spotted by", "Mars Global Surveyor (2003)"]],
     earth: "Deltas form wherever a river slows down as it enters a lake or ocean — like the Nile Delta in Egypt or the Mississippi Delta.",
-    video: S("Mars river delta")
+    video: SEARCH
   },
   {
     id: "huygens", name: "Huygens Crater", type: "crater",
@@ -317,7 +318,7 @@
     ],
     facts: [["Width", "About 470 km"], ["Type", "Peak-ring impact crater"], ["Named for", "Christiaan Huygens"]],
     earth: "Huygens is almost as wide as Lake Michigan is long.",
-    video: S("impact craters Mars")
+    video: SEARCH
   },
   {
     id: "schiaparelli", name: "Schiaparelli Crater", type: "crater",
@@ -329,7 +330,7 @@
     ],
     facts: [["Width", "About 460 km"], ["Named for", "Giovanni Schiaparelli"], ["Fun fact", "It appears in the book and movie The Martian"]],
     earth: "Schiaparelli is wider than the whole state of Ohio.",
-    video: S("Schiaparelli crater Mars", ESA)
+    video: SEARCH
   },
   {
     id: "lyot", name: "Lyot Crater", type: "crater",
@@ -341,7 +342,7 @@
     ],
     facts: [["Width", "About 220 km"], ["Location", "Northern plains"], ["Clue", "Channels possibly from melted ice"]],
     earth: "When big meteorites hit icy ground on Earth, they can also melt ice and send water flowing.",
-    video: S("Mars craters ice")
+    video: SEARCH
   },
   {
     id: "korolev", name: "Korolev Crater", type: "ice",
@@ -353,7 +354,7 @@
     ],
     facts: [["Width", "About 82 km"], ["Ice thickness", "About 1.8 km"], ["Ice volume", "About 2,200 cubic km"]],
     earth: "Korolev holds about as much water as Great Bear Lake in Canada.",
-    video: S("Korolev crater", ESA)
+    video: V("p8o6IGvGwZE", "Flight over the Korolev Crater on Mars", "Freie Universität Berlin (Mars Express camera team)")
   },
   {
     id: "russell", name: "Russell Crater Dunes", type: "region",
@@ -365,7 +366,7 @@
     ],
     facts: [["Crater width", "About 140 km"], ["Dunes", "Some of the largest on Mars"], ["Seasonal change", "Frost and streaks each spring"]],
     earth: "Some of Earth’s tallest sand dunes, in China’s Badain Jaran Desert, are about 500 m tall.",
-    video: S("Mars sand dunes")
+    video: SEARCH
   },
 
   /* ================================================================
@@ -381,7 +382,7 @@
     ],
     facts: [["Width", "About 2,300 km (1,400 mi)"], ["Depth", "More than 7 km"], ["Record", "Lowest point on Mars"]],
     earth: "Hellas is almost wide enough to stretch from Chicago to Las Vegas.",
-    video: S("Hellas basin Mars")
+    video: V("fbgFIPO6FJc", "Flyover of Hellas Planitia on Mars", "Kevin Gill")
   },
   {
     id: "argyre", name: "Argyre Basin", type: "basin",
@@ -393,7 +394,7 @@
     ],
     facts: [["Width", "About 1,800 km"], ["Type", "Impact basin"], ["Age", "About 4 billion years"]],
     earth: "Argyre is about as wide as the distance from Chicago to Miami.",
-    video: S("Argyre Mars")
+    video: SEARCH
   },
   {
     id: "utopia", name: "Utopia Planitia", type: "basin",
@@ -405,7 +406,7 @@
     ],
     facts: [["Width", "About 3,300 km"], ["Hidden ice", "Yes, buried underground"], ["Visitors", "Viking 2, Zhurong"]],
     earth: "Utopia is wider than the distance from New York to Denver.",
-    video: S("Utopia Planitia ice")
+    video: SEARCH
   },
   {
     id: "isidis", name: "Isidis Planitia", type: "basin",
@@ -417,7 +418,7 @@
     ],
     facts: [["Width", "About 1,500 km"], ["Type", "Impact basin"], ["Visitor", "Beagle 2 (2003)"]],
     earth: "Isidis is wider than the distance from Chicago to Dallas.",
-    video: S("Isidis Planitia")
+    video: SEARCH
   },
   {
     id: "chryse", name: "Chryse Planitia", type: "basin",
@@ -429,7 +430,7 @@
     ],
     facts: [["Type", "Low plain"], ["Name means", "Plain of Gold"], ["Visitors", "Viking 1, Mars Pathfinder (nearby)"]],
     earth: "Just like rivers on Earth drop sediment where they slow down, Mars’ floods dropped rocks when they reached this flat plain.",
-    video: S("Viking 1 Chryse Planitia")
+    video: SEARCH
   },
   {
     id: "vastitas", name: "Vastitas Borealis (Northern Lowlands)", type: "basin",
@@ -441,7 +442,7 @@
     ],
     facts: [["Height difference", "About 4–5 km lower than the southern highlands"], ["Surface", "Smooth, fewer craters"], ["Open question", "Was there an ocean?"]],
     earth: "Earth’s ocean floors are also low and smooth compared with continents — one reason scientists wonder about an ancient Martian ocean.",
-    video: S("Mars ocean")
+    video: SEARCH
   },
   {
     id: "syrtis", name: "Syrtis Major", type: "region",
@@ -453,7 +454,7 @@
     ],
     facts: [["Made of", "Basalt (dark volcanic rock)"], ["First recorded", "1659 by Christiaan Huygens"], ["Visible from", "Earth, with a telescope"]],
     earth: "Hawaii’s black-sand beaches are made of basalt, the same dark rock as Syrtis Major.",
-    video: S("Mars from Earth telescope")
+    video: SEARCH
   },
   {
     id: "cerberus", name: "Cerberus Fossae", type: "region",
@@ -465,7 +466,7 @@
     ],
     facts: [["Type", "Fissures (cracks) in the crust"], ["Activity", "Source of many marsquakes"], ["Age", "Some of the youngest surfaces on Mars"]],
     earth: "In Iceland, lava pours out of long cracks called fissures — similar to how Cerberus Fossae may have formed.",
-    video: S("marsquakes InSight")
+    video: SEARCH
   },
   {
     id: "medusae", name: "Medusae Fossae Formation", type: "region",
@@ -477,7 +478,7 @@
     ],
     facts: [["Made of", "Soft rock, likely volcanic ash"], ["Shapes", "Wind-carved ridges (yardangs)"], ["Mystery", "Possible buried ice"]],
     earth: "Wind carves yardangs in Earth’s deserts too — like in Egypt and Iran.",
-    video: S("Medusae Fossae", ESA)
+    video: SEARCH
   },
   {
     id: "face", name: "The “Face on Mars” (Cydonia)", type: "region",
@@ -490,7 +491,7 @@
     ],
     facts: [["Size", "About 2 km long"], ["What it really is", "A natural mesa (hill)"], ["Lesson", "Better data beats a blurry picture"]],
     earth: "The American Southwest has many mesas — flat-topped hills carved by erosion — such as in Monument Valley.",
-    video: S("Face on Mars")
+    video: V("7LWrgH0nORE", "Pareidolia: Why People Keep Seeing Crazy Stuff on Mars", "SciShow")
   },
 
   /* ================================================================
@@ -507,7 +508,7 @@
     ],
     facts: [["Width", "About 1,000 km in summer"], ["Thickness", "About 2–3 km"], ["Made of", "Mostly water ice"]],
     earth: "Mars’ north cap holds a bit more than half as much ice as Greenland’s ice sheet.",
-    video: S("Mars polar ice cap")
+    video: V("yayI0X-v81I", "Flight over the North Polar Ice Cap of Mars", "Freie Universität Berlin (Mars Express camera team)")
   },
   {
     id: "chasmaboreale", name: "Chasma Boreale", type: "canyon",
@@ -519,7 +520,7 @@
     ],
     facts: [["Width", "About 100 km"], ["Depth", "Up to about 2 km"], ["Cut into", "Water ice"]],
     earth: "Chasma Boreale is deeper than the Grand Canyon — and it is made of ice!",
-    video: S("Chasma Boreale", ESA)
+    video: SEARCH
   },
   {
     id: "southcap", name: "South Polar Ice Cap", type: "ice",
@@ -531,7 +532,7 @@
     ],
     facts: [["Permanent cap", "About 400 km wide"], ["Dry ice layer", "About 8 m thick"], ["Fun fact", "Spring “spiders” form from escaping gas"]],
     earth: "On Earth, carbon dioxide never freezes naturally — it is too warm. On Mars, the poles get cold enough (below −125 °C).",
-    video: S("Mars south pole spiders")
+    video: SEARCH
   },
   {
     id: "spiders", name: "“Spiders” of the South Pole", type: "ice",
@@ -544,7 +545,7 @@
     ],
     facts: [["Made by", "Jets of carbon dioxide gas"], ["When", "Every southern spring"], ["Size", "Tens of meters to about 1 km across"]],
     earth: "Nothing like this happens naturally on Earth, because Earth never gets cold enough for dry ice to form. In 2016, about 10,000 volunteers helped NASA pick the best spider spots to photograph — anyone can help with real Mars science.",
-    video: S("Mars spiders south pole")
+    video: V("yYK3dNIZC_Y", "“Spiders” spotted on Mars? Not exactly", "CBS Chicago")
   },
   {
     id: "avalanche", name: "North Polar Avalanche Cliffs", type: "ice",
@@ -557,7 +558,7 @@
     ],
     facts: [["Cliff height", "Over 700 m (2,300 ft)"], ["Biggest dust cloud", "About 180 m across"], ["Photographed", "February 19, 2008, in northern spring"]],
     earth: "On Earth, avalanches on steep mountain slopes are often set off by warming in spring — Mars’ polar cliffs may work in a similar way.",
-    video: S("Mars avalanche HiRISE")
+    video: SEARCH
   },
 
   /* Landforms added for the photo tour */
@@ -572,7 +573,7 @@
     ],
     facts: [["Width", "About 230 km (140 mi)"], ["Location", "On the eastern rim of the Argyre Basin"], ["Named for", "Astronomer Johann Galle"]],
     earth: "Canada’s Manicouagan crater, about 100 km wide, is one of Earth’s largest impact craters you can still see from space. Galle is more than twice as wide.",
-    video: S("Mars impact craters")
+    video: SEARCH
   },
   {
     id: "dustdevil", name: "Dust Devil Alley (Amazonis Planitia)", type: "region",
@@ -585,7 +586,7 @@
     ],
     facts: [["Tallest one photographed here", "More than 800 m (half a mile)"], ["Width", "About 30 m"], ["When they form", "Sunny spring and summer afternoons"]],
     earth: "Dust devils on Earth form the same way, over hot deserts like those in Arizona — but most are much smaller than the ones on Mars.",
-    video: S("Mars dust devil")
+    video: V("YHKIZGKPZm4", "Perseverance Rover Captures Dust Devils Whirling Across Mars", "NASA JPL")
   },
 
   /* ================================================================
@@ -602,7 +603,7 @@
     ],
     facts: [["Landed", "February 18, 2021"], ["Size", "About the size of a car (1,025 kg)"], ["Power", "Nuclear battery (plutonium)"], ["Distance driven", "About 45 km (28 mi) by 2026"], ["Status", "Active"]],
     earth: "Perseverance is about 3 m long — about as long as a small car.",
-    video: V("4czjS9h4Fpg", "Perseverance Rover’s Descent and Touchdown on Mars", "NASA JPL", "3:25"),
+    video: V("4czjS9h4Fpg", "Perseverance Rover’s Descent and Touchdown on Mars", "NASA"),
     link: { label: "Perseverance mission page (NASA)", url: "https://science.nasa.gov/mission/mars-2020-perseverance/" }
   },
   {
@@ -616,7 +617,7 @@
     ],
     facts: [["Landed", "August 6, 2012"], ["Size", "About the size of a car (899 kg)"], ["Power", "Nuclear battery (plutonium)"], ["Distance driven", "About 38 km (24 mi) by 2026"], ["Status", "Active"]],
     earth: "Curiosity weighs about as much as a small car.",
-    video: S("Curiosity rover"),
+    video: V("Ki_Af_o9Q9s", "7 Minutes of Terror: The Challenges of Getting to Mars", "NASA JPL"),
     link: { label: "Curiosity mission page (NASA)", url: "https://science.nasa.gov/mission/msl-curiosity/" }
   },
   {
@@ -629,7 +630,7 @@
     ],
     facts: [["Landed", "January 25, 2004"], ["Planned mission", "90 sols (Mars days)"], ["Distance driven", "45.16 km (28.06 mi)"], ["Last message", "June 10, 2018"], ["Power", "Solar panels"]],
     earth: "Opportunity drove farther than a marathon (42 km). For years it held the record for the longest drive on another world.",
-    video: S("Opportunity rover"),
+    video: V("1Ll-VHYxWXU", "Opportunity: NASA Rover Completes Mars Mission", "NASA JPL"),
     link: { label: "Spirit & Opportunity mission page (NASA)", url: "https://science.nasa.gov/mission/mars-exploration-rovers-spirit-and-opportunity/" }
   },
   {
@@ -643,7 +644,7 @@
     ],
     facts: [["Landed", "January 4, 2004"], ["Planned mission", "90 sols"], ["Distance driven", "7.73 km (4.8 mi)"], ["Last message", "March 22, 2010"], ["Power", "Solar panels"]],
     earth: "Silica deposits like Spirit’s form around hot springs and geysers in places like Yellowstone.",
-    video: S("Spirit rover Mars"),
+    video: V("SwxVgCGmOjQ", "Spirit’s Triumphs on Mars", "NASA JPL"),
     link: { label: "Spirit & Opportunity mission page (NASA)", url: "https://science.nasa.gov/mission/mars-exploration-rovers-spirit-and-opportunity/" }
   },
   {
@@ -656,7 +657,7 @@
     ],
     facts: [["Landed", "July 4, 1997"], ["Rover size", "About 65 cm long, 10.6 kg"], ["Location", "Mouth of Ares Vallis"], ["Last contact", "September 27, 1997"]],
     earth: "Sojourner weighed about as much as a large house cat — around 11 kg.",
-    video: V("8-X8acD_r38", "Mars in a Minute: How Do You Land on Mars?", "NASA JPL", "about 1 min")
+    video: V("XvVOgS9jWn0", "Mars Pathfinder – 20th Anniversary Special", "NASA JPL")
   },
   {
     id: "zhurong", name: "Zhurong Rover (China)", type: "rover",
@@ -668,7 +669,7 @@
     ],
     facts: [["Landed", "May 2021"], ["Country", "China (CNSA)"], ["Distance driven", "About 1.9 km"], ["Power", "Solar panels"]],
     earth: "Zhurong is named after a fire god in Chinese mythology. In Chinese, Mars is called the “fire star.”",
-    video: S("Zhurong rover Mars", "")
+    video: V("vQb2K79mC-w", "China’s Zhurong rover sends back new footage from Mars", "CGTN")
   },
 
   /* ================================================================
@@ -685,7 +686,7 @@
     ],
     facts: [["First flight", "April 19, 2021"], ["Weight", "1.8 kg (4 lb)"], ["Flights", "72"], ["Total distance flown", "About 17 km"], ["Highest flight", "24 m"]],
     earth: "A piece of fabric from the Wright brothers’ 1903 airplane is attached to Ingenuity. The airfield for its first flight was named “Wright Brothers Field.”",
-    video: V("wMnOo2zcjXA", "First Video of NASA’s Ingenuity Mars Helicopter in Flight", "NASA JPL", "about 1 min"),
+    video: V("20vUNgRdB4o", "How this helicopter survived 1004 days on Mars, then disappeared", "Veritasium"),
     link: { label: "Ingenuity mission page (NASA)", url: "https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-mars-helicopter/" }
   },
 
@@ -702,7 +703,7 @@
     ],
     facts: [["Landed", "July 20, 1976"], ["Country", "USA (NASA)"], ["Worked until", "November 1982"], ["Power", "Nuclear generators"]],
     earth: "Viking 1 landed exactly 7 years after Apollo 11 landed on the Moon (July 20, 1969).",
-    video: S("Viking lander Mars 1976")
+    video: V("50-QVbaIdbM", "First U.S. Mars Landing", "NASA")
   },
   {
     id: "viking2", name: "Viking 2 Lander", type: "lander",
@@ -714,7 +715,7 @@
     ],
     facts: [["Landed", "September 3, 1976"], ["Country", "USA (NASA)"], ["Worked until", "April 1980"], ["Famous photo", "Frost on the ground"]],
     earth: "Frost on Mars is partly water ice and partly frozen carbon dioxide.",
-    video: S("Viking 2 lander")
+    video: V("LpU7oaXhPGk", "First U.S. Spacecraft on Mars", "Smithsonian National Air and Space Museum")
   },
   {
     id: "mars3", name: "Mars 3 Lander (USSR)", type: "lander",
@@ -726,7 +727,7 @@
     ],
     facts: [["Landed", "December 2, 1971"], ["Country", "Soviet Union (USSR)"], ["Worked for", "About 20 seconds"], ["Location", "Approximate"]],
     earth: "Mars 3 arrived during one of the biggest dust storms ever seen on Mars — it covered almost the whole planet.",
-    video: S("Mars 3 Soviet lander 1971", "")
+    video: V("7p0uqmbEY9o", "The First Time We Landed on Mars", "SciShow Space")
   },
   {
     id: "phoenix", name: "Phoenix Lander", type: "lander",
@@ -738,7 +739,7 @@
     ],
     facts: [["Landed", "May 25, 2008"], ["Country", "USA (NASA)"], ["Big find", "Water ice just under the soil"], ["Last signal", "November 2008"]],
     earth: "When ice turns directly into gas without melting first, it is called sublimation. Dry ice does this on Earth.",
-    video: S("Phoenix Mars lander ice")
+    video: V("vK9fQnsN2uc", "Phoenix Mars Mission: Onto the Ice (full documentary)", "Arizona Public Media")
   },
   {
     id: "insight", name: "InSight Lander", type: "lander",
@@ -750,7 +751,7 @@
     ],
     facts: [["Landed", "November 26, 2018"], ["Marsquakes detected", "1,319"], ["Big find", "Size of Mars’ liquid core"], ["Mission ended", "December 2022"]],
     earth: "Scientists study Earth’s interior the same way — by tracking how earthquake waves travel through the planet.",
-    video: V("b2P_CVOd5G0", "Mars in a Minute: What’s Inside Mars?", "NASA JPL", "about 1 min")
+    video: V("DLBP-5KoSCc", "First Likely Marsquake Heard by NASA’s InSight", "NASA JPL")
   },
   {
     id: "beagle2", name: "Beagle 2 Lander (UK)", type: "lander",
@@ -762,7 +763,7 @@
     ],
     facts: [["Landed", "December 25, 2003"], ["Country", "United Kingdom"], ["Found", "2015, by NASA’s MRO orbiter"]],
     earth: "Beagle 2 was named after HMS Beagle, the ship that carried Charles Darwin around the world.",
-    video: S("Beagle 2 found", ESA)
+    video: V("lqE44_DvKi0", "What happened to Beagle 2?", "National Space Centre")
   },
   {
     id: "schiaparelli_edm", name: "Schiaparelli Lander (ESA)", type: "lander",
@@ -774,7 +775,7 @@
     ],
     facts: [["Arrived", "October 19, 2016"], ["Agency", "European Space Agency (ESA)"], ["Result", "Crashed"], ["Location", "Meridiani Planum"]],
     earth: "Engineers test parachutes and landing systems on Earth, but Mars’ thin air makes the real thing very different.",
-    video: S("Schiaparelli lander", ESA)
+    video: V("4WkZ1rzZU8I", "How We Know Europe’s Mars Lander Crashed", "Seeker")
   },
 
   /* ================================================================
@@ -790,7 +791,7 @@
     ],
     facts: [["Arrived", "November 14, 1971"], ["Country", "USA (NASA)"], ["Discovered", "Olympus Mons, Valles Marineris, river channels"], ["Status", "Turned off (1972)"]],
     earth: "Before Mariner 9, some people thought Mars looked mostly like our Moon. It turned out to be much more interesting!",
-    video: S("Mariner 9")
+    video: SEARCH
   },
   {
     id: "mgs", name: "Mars Global Surveyor (orbiter)", type: "orbiter",
@@ -802,7 +803,7 @@
     ],
     facts: [["Arrived", "September 1997"], ["Country", "USA (NASA)"], ["Famous for", "MOLA elevation map"], ["Mission ended", "November 2006"]],
     earth: "Satellites use lasers (lidar) to map Earth’s forests and ice sheets in the same way.",
-    video: S("Mars Global Surveyor")
+    video: SEARCH
   },
   {
     id: "odyssey", name: "2001 Mars Odyssey (orbiter)", type: "orbiter",
@@ -814,7 +815,7 @@
     ],
     facts: [["Arrived", "October 24, 2001"], ["Country", "USA (NASA)"], ["Big find", "Water ice under the surface"], ["Named after", "2001: A Space Odyssey"]],
     earth: "Infrared cameras on Earth can see heat — like firefighters use to find people in smoke.",
-    video: S("Mars Odyssey")
+    video: SEARCH
   },
   {
     id: "marsexpress", name: "Mars Express (orbiter, ESA)", type: "orbiter",
@@ -826,7 +827,7 @@
     ],
     facts: [["Arrived", "December 2003"], ["Agency", "European Space Agency (ESA)"], ["Camera", "HRSC (3D color)"], ["Carried", "Beagle 2 lander"]],
     earth: "Radar is also used on Earth to measure how thick the ice is in Antarctica.",
-    video: S("Mars Express", ESA)
+    video: SEARCH
   },
   {
     id: "mro", name: "Mars Reconnaissance Orbiter", type: "orbiter",
@@ -838,7 +839,7 @@
     ],
     facts: [["Arrived", "March 2006"], ["Country", "USA (NASA)"], ["Best camera", "HiRISE"], ["Real orbit height", "About 250–320 km"]],
     earth: "HiRISE is like a spy satellite for Mars. From about 300 km up, it can see things about 1 m across.",
-    video: S("HiRISE Mars Reconnaissance Orbiter")
+    video: SEARCH
   },
   {
     id: "maven", name: "MAVEN (orbiter)", type: "orbiter",
@@ -850,7 +851,7 @@
     ],
     facts: [["Arrived", "September 21, 2014"], ["Country", "USA (NASA)"], ["Big find", "Solar wind strips away Mars’ air"], ["Status", "Contact lost December 2025"]],
     earth: "Earth’s magnetic field helps protect our atmosphere from the solar wind. Mars lost most of its magnetic field long ago.",
-    video: S("MAVEN Mars atmosphere")
+    video: SEARCH
   },
   {
     id: "mom", name: "Mangalyaan / Mars Orbiter Mission (India)", type: "orbiter",
@@ -862,7 +863,7 @@
     ],
     facts: [["Arrived", "September 24, 2014"], ["Country", "India (ISRO)"], ["Cost", "About $74 million"], ["Worked until", "2022"]],
     earth: "“Mangal” means Mars in Hindi, and “yaan” means craft or vehicle.",
-    video: S("Mangalyaan Mars Orbiter Mission ISRO", "")
+    video: SEARCH
   },
   {
     id: "tgo", name: "ExoMars Trace Gas Orbiter (ESA)", type: "orbiter",
@@ -874,7 +875,7 @@
     ],
     facts: [["Arrived", "October 19, 2016"], ["Agencies", "ESA & Roscosmos (Russia)"], ["Job", "Measures rare gases"], ["Also", "Relays rover messages"]],
     earth: "Cows, wetlands, and termites make lots of methane on Earth. Volcanoes and some rocks can make it too.",
-    video: S("Trace Gas Orbiter", ESA)
+    video: SEARCH
   },
   {
     id: "hope", name: "Hope Probe (UAE)", type: "orbiter",
@@ -886,7 +887,7 @@
     ],
     facts: [["Arrived", "February 9, 2021"], ["Country", "United Arab Emirates"], ["Job", "Studies Mars weather and atmosphere"]],
     earth: "Weather satellites watching Earth from high above work in a very similar way.",
-    video: S("Hope probe Emirates Mars Mission")
+    video: SEARCH
   },
   {
     id: "tianwen1", name: "Tianwen-1 Orbiter (China)", type: "orbiter",
@@ -898,7 +899,7 @@
     ],
     facts: [["Arrived", "February 10, 2021"], ["Country", "China (CNSA)"], ["Carried", "Zhurong rover"]],
     earth: "China became the first country to send an orbiter, lander, and rover to Mars all on its first mission.",
-    video: S("Tianwen-1 Mars orbiter", "")
+    video: SEARCH
   },
 
   /* ================================================================
@@ -914,7 +915,7 @@
     ],
     facts: [["Size", "About 27 × 22 × 18 km"], ["Distance above Mars", "About 6,000 km"], ["One orbit takes", "7 hours, 39 minutes"], ["Discovered", "1877 by Asaph Hall"]],
     earth: "Our Moon is about 3,475 km wide. Phobos would fit inside a big city like Los Angeles.",
-    video: S("Phobos moon Mars")
+    video: V("aKK7vS2CHC8", "NASA’s Perseverance Rover Sees Solar Eclipse on Mars", "NASA JPL")
   },
   {
     id: "deimos", name: "Deimos (moon)", type: "moon",
@@ -926,7 +927,7 @@
     ],
     facts: [["Size", "About 15 × 12 × 11 km"], ["Distance above Mars", "About 20,000 km"], ["One orbit takes", "About 30 hours"], ["Discovered", "1877 by Asaph Hall"]],
     earth: "In Greek myths, Phobos (fear) and Deimos (dread) were the sons of Ares, the god of war. Mars is the Roman name for Ares.",
-    video: S("Deimos moon Mars")
+    video: SEARCH
   },
 
   /* ================================================================
@@ -945,7 +946,7 @@
     ],
     facts: [["Location", "Northern plains, about 40° north"], ["Height", "About 4 km below average"], ["Key resource", "Buried water ice"], ["Studied for", "SpaceX Starship (with NASA scientists)"]],
     earth: "Ice buried under soil is like the permafrost found in Alaska and northern Canada.",
-    video: S("humans to Mars landing site"),
+    video: SEARCH,
     link: { label: "HiRISE photo of a possible Starship landing site (University of Arizona)", url: "https://hirise.lpl.arizona.edu/ESP_060706_2195" }
   },
   {
@@ -958,7 +959,7 @@
     ],
     facts: [["Location", "About 35° north"], ["Height", "About 3 km below average"], ["Key resource", "Ice-rich glaciers under debris"], ["Status", "Candidate only — not chosen"]],
     earth: "Some glaciers in Antarctica are also hidden under rocks and dust, which protects the ice from melting away.",
-    video: S("humans to Mars landing site"),
+    video: SEARCH,
     link: { label: "Scientists’ report on possible Starship landing sites (advanced reading)", url: "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf" }
   },
   {
@@ -971,7 +972,7 @@
     ],
     facts: [["Location", "About 40° north"], ["Height", "About 4 km below average"], ["Key resource", "Shallow buried ice"], ["Status", "Candidate only — not chosen"]],
     earth: "On Earth, explorers in Antarctica melt ice and snow for water — future Mars explorers may do the same.",
-    video: S("humans to Mars landing site"),
+    video: SEARCH,
     link: { label: "Scientists’ report on possible Starship landing sites (advanced reading)", url: "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf" }
   },
   {
@@ -984,7 +985,7 @@
     ],
     facts: [["Location", "Near the equator"], ["Proposed at", "NASA workshop, 2015"], ["Bonus", "Explored by the Opportunity rover"], ["Status", "Candidate only — not chosen"]],
     earth: "The hematite “blueberries” Opportunity found here are similar to iron-rich stones found in Utah’s deserts.",
-    video: S("humans to Mars landing site"),
+    video: SEARCH,
     link: { label: "Where should humans land on Mars? (The Planetary Society)", url: "https://www.planetary.org/articles/20151027-humans-mars-workshop" }
   }
   ];

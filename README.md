@@ -52,8 +52,8 @@ You can edit files right on GitHub: open the file → pencil icon → make your 
 
 **To add a new place:** copy any existing place block in `places.js`, give it a new `id`, and change its name, latitude/longitude, and text. Latitude is north (+) or south (−). Longitude is east (+) or west (−). The Mars Trek site (trek.nasa.gov/mars) shows coordinates when you hover over the map.
 
-**To use your own favorite video:** replace the `video: S(...)` line with
-`video: V("VIDEO_ID", "Video title", "Channel", "2:30")`. The VIDEO_ID is the part after `watch?v=` in a YouTube link.
+**To use your own favorite video:** replace the place's `video: SEARCH` line with
+`video: V("VIDEO_ID", "Video title", "Channel")`. The VIDEO_ID is the part after `watch?v=` in a YouTube link.
 
 ---
 
@@ -78,85 +78,92 @@ Each point is stored as `[longitude, latitude, sol]`. To update, ask a tech-savv
 
 ## Video links: please preview before class
 
-Videos marked *Direct video* go straight to one specific video. The others open a search of an official channel (NASA JPL or the European Space Agency) for that topic, so students see official videos. A few non-NASA missions (China's, India's, and the USSR's) search all of YouTube instead. YouTube search results change over time, so take a quick look first.
+The rovers, landers and the most popular places have one hand-picked video ("Watch the video"). Every other place has a "Find videos" button that opens a regular YouTube search for that place, so students can scroll the results. Please watch the hand-picked videos before class, and remember that YouTube search results change over time.
 
-| Card | What the button opens | Link |
+To change a video, edit the place in `js/data/places.js`: `V("VIDEO_ID", "Title", "Channel")` links one video, and `SEARCH` makes a YouTube search for the place's name.
+
+### Hand-picked videos (26)
+
+| Card | Video | Link |
 |---|---|---|
-| Olympus Mons | Search of @NASAJPL for "Olympus Mons" | https://www.youtube.com/@NASAJPL/search?query=Olympus%20Mons |
-| Ascraeus Mons | Search of @NASAJPL for "Tharsis volcanoes Mars" | https://www.youtube.com/@NASAJPL/search?query=Tharsis%20volcanoes%20Mars |
-| Pavonis Mons | Search of @NASAJPL for "Mars lava tubes caves" | https://www.youtube.com/@NASAJPL/search?query=Mars%20lava%20tubes%20caves |
-| Arsia Mons | Search of @NASAJPL for "Arsia Mons" | https://www.youtube.com/@NASAJPL/search?query=Arsia%20Mons |
-| Alba Mons | Search of @NASAJPL for "Alba Mons" | https://www.youtube.com/@NASAJPL/search?query=Alba%20Mons |
-| Elysium Mons | Search of @NASAJPL for "Elysium Mars volcano" | https://www.youtube.com/@NASAJPL/search?query=Elysium%20Mars%20volcano |
-| Valles Marineris | Search of @NASAJPL for "Valles Marineris" | https://www.youtube.com/@NASAJPL/search?query=Valles%20Marineris |
-| Noctis Labyrinthus | Search of @EuropeanSpaceAgency for "Noctis Labyrinthus" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Noctis%20Labyrinthus |
-| Kasei Valles | Search of @EuropeanSpaceAgency for "Kasei Valles" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Kasei%20Valles |
-| Ares Vallis | Search of @NASAJPL for "Mars Pathfinder Ares Vallis" | https://www.youtube.com/@NASAJPL/search?query=Mars%20Pathfinder%20Ares%20Vallis |
-| Nanedi Valles | Search of @NASAJPL for "water on Mars river valleys" | https://www.youtube.com/@NASAJPL/search?query=water%20on%20Mars%20river%20valleys |
-| Ma’adim Vallis | Search of @NASAJPL for "Spirit rover Gusev crater" | https://www.youtube.com/@NASAJPL/search?query=Spirit%20rover%20Gusev%20crater |
-| Warrego Valles | Search of @NASAJPL for "Mars valley networks rain" | https://www.youtube.com/@NASAJPL/search?query=Mars%20valley%20networks%20rain |
-| Mawrth Vallis | Search of @NASAJPL for "Mars clay minerals water" | https://www.youtube.com/@NASAJPL/search?query=Mars%20clay%20minerals%20water |
-| Jezero Crater | Search of @NASAJPL for "Jezero crater" | https://www.youtube.com/@NASAJPL/search?query=Jezero%20crater |
-| Gale Crater | Search of @NASAJPL for "Gale crater Curiosity" | https://www.youtube.com/@NASAJPL/search?query=Gale%20crater%20Curiosity |
-| Mount Sharp (Aeolis Mons) | Search of @NASAJPL for "Curiosity Mount Sharp layers" | https://www.youtube.com/@NASAJPL/search?query=Curiosity%20Mount%20Sharp%20layers |
-| Gusev Crater | Search of @NASAJPL for "Spirit rover" | https://www.youtube.com/@NASAJPL/search?query=Spirit%20rover |
-| Endeavour Crater | Search of @NASAJPL for "Opportunity rover Endeavour crater" | https://www.youtube.com/@NASAJPL/search?query=Opportunity%20rover%20Endeavour%20crater |
-| Victoria Crater | Search of @NASAJPL for "Opportunity Victoria crater" | https://www.youtube.com/@NASAJPL/search?query=Opportunity%20Victoria%20crater |
-| Eberswalde Delta | Search of @NASAJPL for "Mars river delta" | https://www.youtube.com/@NASAJPL/search?query=Mars%20river%20delta |
-| Huygens Crater | Search of @NASAJPL for "impact craters Mars" | https://www.youtube.com/@NASAJPL/search?query=impact%20craters%20Mars |
-| Galle Crater (the “Happy Face”) | Search of @NASAJPL for "Mars impact craters" | https://www.youtube.com/@NASAJPL/search?query=Mars%20impact%20craters |
-| Dust Devil Alley (Amazonis Planitia) | Search of @NASAJPL for "Mars dust devil" | https://www.youtube.com/@NASAJPL/search?query=Mars%20dust%20devil |
-| “Spiders” of the South Pole | Search of @NASAJPL for "Mars spiders south pole" | https://www.youtube.com/@NASAJPL/search?query=Mars%20spiders%20south%20pole |
-| North Polar Avalanche Cliffs | Search of @NASAJPL for "Mars avalanche HiRISE" | https://www.youtube.com/@NASAJPL/search?query=Mars%20avalanche%20HiRISE |
-| Schiaparelli Crater | Search of @EuropeanSpaceAgency for "Schiaparelli crater Mars" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Schiaparelli%20crater%20Mars |
-| Lyot Crater | Search of @NASAJPL for "Mars craters ice" | https://www.youtube.com/@NASAJPL/search?query=Mars%20craters%20ice |
-| Korolev Crater | Search of @EuropeanSpaceAgency for "Korolev crater" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Korolev%20crater |
-| Russell Crater Dunes | Search of @NASAJPL for "Mars sand dunes" | https://www.youtube.com/@NASAJPL/search?query=Mars%20sand%20dunes |
-| Hellas Basin | Search of @NASAJPL for "Hellas basin Mars" | https://www.youtube.com/@NASAJPL/search?query=Hellas%20basin%20Mars |
-| Argyre Basin | Search of @NASAJPL for "Argyre Mars" | https://www.youtube.com/@NASAJPL/search?query=Argyre%20Mars |
-| Utopia Planitia | Search of @NASAJPL for "Utopia Planitia ice" | https://www.youtube.com/@NASAJPL/search?query=Utopia%20Planitia%20ice |
-| Isidis Planitia | Search of @NASAJPL for "Isidis Planitia" | https://www.youtube.com/@NASAJPL/search?query=Isidis%20Planitia |
-| Chryse Planitia | Search of @NASAJPL for "Viking 1 Chryse Planitia" | https://www.youtube.com/@NASAJPL/search?query=Viking%201%20Chryse%20Planitia |
-| Vastitas Borealis (Northern Lowlands) | Search of @NASAJPL for "Mars ocean" | https://www.youtube.com/@NASAJPL/search?query=Mars%20ocean |
-| Syrtis Major | Search of @NASAJPL for "Mars from Earth telescope" | https://www.youtube.com/@NASAJPL/search?query=Mars%20from%20Earth%20telescope |
-| Cerberus Fossae | Search of @NASAJPL for "marsquakes InSight" | https://www.youtube.com/@NASAJPL/search?query=marsquakes%20InSight |
-| Medusae Fossae Formation | Search of @EuropeanSpaceAgency for "Medusae Fossae" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Medusae%20Fossae |
-| The “Face on Mars” (Cydonia) | Search of @NASAJPL for "Face on Mars" | https://www.youtube.com/@NASAJPL/search?query=Face%20on%20Mars |
-| North Polar Ice Cap | Search of @NASAJPL for "Mars polar ice cap" | https://www.youtube.com/@NASAJPL/search?query=Mars%20polar%20ice%20cap |
-| Chasma Boreale | Search of @EuropeanSpaceAgency for "Chasma Boreale" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Chasma%20Boreale |
-| South Polar Ice Cap | Search of @NASAJPL for "Mars south pole spiders" | https://www.youtube.com/@NASAJPL/search?query=Mars%20south%20pole%20spiders |
-| Perseverance Rover | Direct video: Perseverance Rover’s Descent and Touchdown on Mars (3:25) | https://www.youtube.com/watch?v=4czjS9h4Fpg |
-| Curiosity Rover | Search of @NASAJPL for "Curiosity rover" | https://www.youtube.com/@NASAJPL/search?query=Curiosity%20rover |
-| Opportunity Rover | Search of @NASAJPL for "Opportunity rover" | https://www.youtube.com/@NASAJPL/search?query=Opportunity%20rover |
-| Spirit Rover | Search of @NASAJPL for "Spirit rover Mars" | https://www.youtube.com/@NASAJPL/search?query=Spirit%20rover%20Mars |
-| Mars Pathfinder & Sojourner | Direct video: Mars in a Minute: How Do You Land on Mars? (about 1 min) | https://www.youtube.com/watch?v=8-X8acD_r38 |
-| Zhurong Rover (China) | Search of all of YouTube for "Zhurong rover Mars" | https://www.youtube.com/results?search_query=Zhurong%20rover%20Mars |
-| Ingenuity Helicopter | Direct video: First Video of NASA’s Ingenuity Mars Helicopter in Flight (about 1 min) | https://www.youtube.com/watch?v=wMnOo2zcjXA |
-| Viking 1 Lander | Search of @NASAJPL for "Viking lander Mars 1976" | https://www.youtube.com/@NASAJPL/search?query=Viking%20lander%20Mars%201976 |
-| Viking 2 Lander | Search of @NASAJPL for "Viking 2 lander" | https://www.youtube.com/@NASAJPL/search?query=Viking%202%20lander |
-| Mars 3 Lander (USSR) | Search of all of YouTube for "Mars 3 Soviet lander 1971" | https://www.youtube.com/results?search_query=Mars%203%20Soviet%20lander%201971 |
-| Phoenix Lander | Search of @NASAJPL for "Phoenix Mars lander ice" | https://www.youtube.com/@NASAJPL/search?query=Phoenix%20Mars%20lander%20ice |
-| InSight Lander | Direct video: Mars in a Minute: What’s Inside Mars? (about 1 min) | https://www.youtube.com/watch?v=b2P_CVOd5G0 |
-| Beagle 2 Lander (UK) | Search of @EuropeanSpaceAgency for "Beagle 2 found" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Beagle%202%20found |
-| Schiaparelli Lander (ESA) | Search of @EuropeanSpaceAgency for "Schiaparelli lander" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Schiaparelli%20lander |
-| Mariner 9 (orbiter) | Search of @NASAJPL for "Mariner 9" | https://www.youtube.com/@NASAJPL/search?query=Mariner%209 |
-| Mars Global Surveyor (orbiter) | Search of @NASAJPL for "Mars Global Surveyor" | https://www.youtube.com/@NASAJPL/search?query=Mars%20Global%20Surveyor |
-| 2001 Mars Odyssey (orbiter) | Search of @NASAJPL for "Mars Odyssey" | https://www.youtube.com/@NASAJPL/search?query=Mars%20Odyssey |
-| Mars Express (orbiter, ESA) | Search of @EuropeanSpaceAgency for "Mars Express" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Mars%20Express |
-| Mars Reconnaissance Orbiter | Search of @NASAJPL for "HiRISE Mars Reconnaissance Orbiter" | https://www.youtube.com/@NASAJPL/search?query=HiRISE%20Mars%20Reconnaissance%20Orbiter |
-| MAVEN (orbiter) | Search of @NASAJPL for "MAVEN Mars atmosphere" | https://www.youtube.com/@NASAJPL/search?query=MAVEN%20Mars%20atmosphere |
-| Mangalyaan / Mars Orbiter Mission (India) | Search of all of YouTube for "Mangalyaan Mars Orbiter Mission ISRO" | https://www.youtube.com/results?search_query=Mangalyaan%20Mars%20Orbiter%20Mission%20ISRO |
-| ExoMars Trace Gas Orbiter (ESA) | Search of @EuropeanSpaceAgency for "Trace Gas Orbiter" | https://www.youtube.com/@EuropeanSpaceAgency/search?query=Trace%20Gas%20Orbiter |
-| Hope Probe (UAE) | Search of @NASAJPL for "Hope probe Emirates Mars Mission" | https://www.youtube.com/@NASAJPL/search?query=Hope%20probe%20Emirates%20Mars%20Mission |
-| Tianwen-1 Orbiter (China) | Search of all of YouTube for "Tianwen-1 Mars orbiter" | https://www.youtube.com/results?search_query=Tianwen-1%20Mars%20orbiter |
-| Phobos (moon) | Search of @NASAJPL for "Phobos moon Mars" | https://www.youtube.com/@NASAJPL/search?query=Phobos%20moon%20Mars |
-| Deimos (moon) | Search of @NASAJPL for "Deimos moon Mars" | https://www.youtube.com/@NASAJPL/search?query=Deimos%20moon%20Mars |
-| Arcadia Planitia | Search of @NASAJPL for "humans to Mars landing site" | https://www.youtube.com/@NASAJPL/search?query=humans%20to%20Mars%20landing%20site |
-| Phlegra Montes | Search of @NASAJPL for "humans to Mars landing site" | https://www.youtube.com/@NASAJPL/search?query=humans%20to%20Mars%20landing%20site |
-| Erebus Montes | Search of @NASAJPL for "humans to Mars landing site" | https://www.youtube.com/@NASAJPL/search?query=humans%20to%20Mars%20landing%20site |
-| Meridiani Planum | Search of @NASAJPL for "humans to Mars landing site" | https://www.youtube.com/@NASAJPL/search?query=humans%20to%20Mars%20landing%20site |
+| Olympus Mons | The Biggest Volcano in the Solar System (SciShow Space) | https://www.youtube.com/watch?v=Nug6iuKowRk |
+| Valles Marineris | Fly over the ‘Grand Canyon’ of Mars in high-resolution orbiter imagery (Space.com) | https://www.youtube.com/watch?v=srQXLrsfVxI |
+| Jezero Crater | Mars 2020 Landing Site: Jezero Crater Flyover (NASA JPL) | https://www.youtube.com/watch?v=qnZ_sidmr4Y |
+| Gale Crater | NASA’s Curiosity Rover Turns 10: Here’s What It’s Learned (NASA JPL) | https://www.youtube.com/watch?v=LwfJQa7vaGw |
+| Mount Sharp (Aeolis Mons) | Curiosity Rover’s Most Challenging Climb Yet (NASA JPL) | https://www.youtube.com/watch?v=xtDpWGF16po |
+| Korolev Crater | Flight over the Korolev Crater on Mars (Freie Universität Berlin (Mars Express camera team)) | https://www.youtube.com/watch?v=p8o6IGvGwZE |
+| Hellas Basin | Flyover of Hellas Planitia on Mars (Kevin Gill) | https://www.youtube.com/watch?v=fbgFIPO6FJc |
+| The “Face on Mars” (Cydonia) | Pareidolia: Why People Keep Seeing Crazy Stuff on Mars (SciShow) | https://www.youtube.com/watch?v=7LWrgH0nORE |
+| North Polar Ice Cap | Flight over the North Polar Ice Cap of Mars (Freie Universität Berlin (Mars Express camera team)) | https://www.youtube.com/watch?v=yayI0X-v81I |
+| “Spiders” of the South Pole | “Spiders” spotted on Mars? Not exactly (CBS Chicago) | https://www.youtube.com/watch?v=yYK3dNIZC_Y |
+| Dust Devil Alley (Amazonis Planitia) | Perseverance Rover Captures Dust Devils Whirling Across Mars (NASA JPL) | https://www.youtube.com/watch?v=YHKIZGKPZm4 |
+| Perseverance Rover | Perseverance Rover’s Descent and Touchdown on Mars (NASA) | https://www.youtube.com/watch?v=4czjS9h4Fpg |
+| Curiosity Rover | 7 Minutes of Terror: The Challenges of Getting to Mars (NASA JPL) | https://www.youtube.com/watch?v=Ki_Af_o9Q9s |
+| Opportunity Rover | Opportunity: NASA Rover Completes Mars Mission (NASA JPL) | https://www.youtube.com/watch?v=1Ll-VHYxWXU |
+| Spirit Rover | Spirit’s Triumphs on Mars (NASA JPL) | https://www.youtube.com/watch?v=SwxVgCGmOjQ |
+| Mars Pathfinder & Sojourner | Mars Pathfinder – 20th Anniversary Special (NASA JPL) | https://www.youtube.com/watch?v=XvVOgS9jWn0 |
+| Zhurong Rover (China) | China’s Zhurong rover sends back new footage from Mars (CGTN) | https://www.youtube.com/watch?v=vQb2K79mC-w |
+| Ingenuity Helicopter | How this helicopter survived 1004 days on Mars, then disappeared (Veritasium) | https://www.youtube.com/watch?v=20vUNgRdB4o |
+| Viking 1 Lander | First U.S. Mars Landing (NASA) | https://www.youtube.com/watch?v=50-QVbaIdbM |
+| Viking 2 Lander | First U.S. Spacecraft on Mars (Smithsonian National Air and Space Museum) | https://www.youtube.com/watch?v=LpU7oaXhPGk |
+| Mars 3 Lander (USSR) | The First Time We Landed on Mars (SciShow Space) | https://www.youtube.com/watch?v=7p0uqmbEY9o |
+| Phoenix Lander | Phoenix Mars Mission: Onto the Ice (full documentary) (Arizona Public Media) | https://www.youtube.com/watch?v=vK9fQnsN2uc |
+| InSight Lander | First Likely Marsquake Heard by NASA’s InSight (NASA JPL) | https://www.youtube.com/watch?v=DLBP-5KoSCc |
+| Beagle 2 Lander (UK) | What happened to Beagle 2? (National Space Centre) | https://www.youtube.com/watch?v=lqE44_DvKi0 |
+| Schiaparelli Lander (ESA) | How We Know Europe’s Mars Lander Crashed (Seeker) | https://www.youtube.com/watch?v=4WkZ1rzZU8I |
+| Phobos (moon) | NASA’s Perseverance Rover Sees Solar Eclipse on Mars (NASA JPL) | https://www.youtube.com/watch?v=aKK7vS2CHC8 |
 
----
+### YouTube searches (47)
+
+| Card | What the button opens |
+|---|---|
+| Ascraeus Mons | YouTube search for "Ascraeus Mons Mars" |
+| Pavonis Mons | YouTube search for "Pavonis Mons Mars" |
+| Arsia Mons | YouTube search for "Arsia Mons Mars" |
+| Alba Mons | YouTube search for "Alba Mons Mars" |
+| Elysium Mons | YouTube search for "Elysium Mons Mars" |
+| Noctis Labyrinthus | YouTube search for "Noctis Labyrinthus Mars" |
+| Kasei Valles | YouTube search for "Kasei Valles Mars" |
+| Ares Vallis | YouTube search for "Ares Vallis Mars" |
+| Nanedi Valles | YouTube search for "Nanedi Valles Mars" |
+| Ma’adim Vallis | YouTube search for "Ma’adim Vallis Mars" |
+| Warrego Valles | YouTube search for "Warrego Valles Mars" |
+| Mawrth Vallis | YouTube search for "Mawrth Vallis Mars" |
+| Gusev Crater | YouTube search for "Gusev Crater Mars" |
+| Endeavour Crater | YouTube search for "Endeavour Crater Mars" |
+| Victoria Crater | YouTube search for "Victoria Crater Mars" |
+| Eberswalde Delta | YouTube search for "Eberswalde Delta Mars" |
+| Huygens Crater | YouTube search for "Huygens Crater Mars" |
+| Schiaparelli Crater | YouTube search for "Schiaparelli Crater Mars" |
+| Lyot Crater | YouTube search for "Lyot Crater Mars" |
+| Russell Crater Dunes | YouTube search for "Russell Crater Dunes Mars" |
+| Argyre Basin | YouTube search for "Argyre Basin Mars" |
+| Utopia Planitia | YouTube search for "Utopia Planitia Mars" |
+| Isidis Planitia | YouTube search for "Isidis Planitia Mars" |
+| Chryse Planitia | YouTube search for "Chryse Planitia Mars" |
+| Vastitas Borealis (Northern Lowlands) | YouTube search for "Vastitas Borealis Mars" |
+| Syrtis Major | YouTube search for "Syrtis Major Mars" |
+| Cerberus Fossae | YouTube search for "Cerberus Fossae Mars" |
+| Medusae Fossae Formation | YouTube search for "Medusae Fossae Formation Mars" |
+| Chasma Boreale | YouTube search for "Chasma Boreale Mars" |
+| South Polar Ice Cap | YouTube search for "South Polar Ice Cap Mars" |
+| North Polar Avalanche Cliffs | YouTube search for "North Polar Avalanche Cliffs Mars" |
+| Galle Crater (the “Happy Face”) | YouTube search for "Galle Crater Mars" |
+| Mariner 9 (orbiter) | YouTube search for "Mariner 9 Mars" |
+| Mars Global Surveyor (orbiter) | YouTube search for "Mars Global Surveyor" |
+| 2001 Mars Odyssey (orbiter) | YouTube search for "2001 Mars Odyssey" |
+| Mars Express (orbiter, ESA) | YouTube search for "Mars Express" |
+| Mars Reconnaissance Orbiter | YouTube search for "Mars Reconnaissance Orbiter" |
+| MAVEN (orbiter) | YouTube search for "MAVEN Mars" |
+| Mangalyaan / Mars Orbiter Mission (India) | YouTube search for "Mangalyaan Mars Orbiter Mission" |
+| ExoMars Trace Gas Orbiter (ESA) | YouTube search for "ExoMars Trace Gas Orbiter" |
+| Hope Probe (UAE) | YouTube search for "Hope Probe Mars" |
+| Tianwen-1 Orbiter (China) | YouTube search for "Tianwen-1 Orbiter Mars" |
+| Deimos (moon) | YouTube search for "Deimos Mars" |
+| Arcadia Planitia | YouTube search for "Arcadia Planitia Mars" |
+| Phlegra Montes | YouTube search for "Phlegra Montes Mars" |
+| Erebus Montes | YouTube search for "Erebus Montes Mars" |
+| Meridiani Planum | YouTube search for "Meridiani Planum Mars" |
 
 ## Credits
 - Color map: NASA/JPL-Caltech/USGS, Viking MDIM 2.1, served by NASA Mars Trek
