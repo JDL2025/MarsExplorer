@@ -341,6 +341,7 @@
   const allLandformsOn = () => LANDFORM_TYPES.every((t) => filters.types[t]);
   let selected = null;
   let focusIds = null;   // when set, the globe shows only these search results
+  let pinsHidden = false; // true while the Ancient Mars time machine is open
   const occluderPos = new Cesium.Cartesian3();
   const win = new Cesium.Cartesian2();
   let lastHeightText = "";
@@ -354,7 +355,7 @@
   function updateVisibility() {
     const hKm = cameraHeightKm();
     const occ = new Cesium.EllipsoidalOccluder(MARS, Cesium.Cartesian3.clone(camera.positionWC, occluderPos));
-    const showPaths = (focusIds ? true : filters.paths && filters.missions) && hKm < 3000;
+    const showPaths = !pinsHidden && (focusIds ? true : filters.paths && filters.missions) && hKm < 3000;
     Object.entries(roverPaths).forEach(([id, rp]) => { rp.under.show = rp.dash.show = showPaths && (!focusIds || focusIds.has(id)); });
 
     const cand = [];
@@ -370,6 +371,7 @@
       else if (m.group === "future") ok = filters.future && (m.rank === 1 || hKm < 9000);
       else ok = filters.space && hKm > 900;
       if (m === selected) ok = true;
+      if (pinsHidden) ok = false;
       if (ok) ok = occ.isPointVisible(m.pos);
       if (ok) {
         const w = Cesium.SceneTransforms.worldToWindowCoordinates(scene, m.pos, win);
@@ -377,7 +379,7 @@
       }
       m.cand = ok;
       if (ok) cand.push(m);
-      if (m.ring) m.ring.show = (focusIds ? m.cand : filters.space && hKm > 900) && (m.obj.moon || m === selected);
+      if (m.ring) m.ring.show = !pinsHidden && (focusIds ? m.cand : filters.space && hKm > 900) && (m.obj.moon || m === selected);
     }
     // Priority: selected first, then path stops (when close), then rank, missions before landforms
     cand.sort((a, b) => prio(a) - prio(b));
@@ -1072,6 +1074,13 @@
   window.addEventListener("resize", () => scene.requestRender());
 
   // Expose for debugging / teacher tweaks in the browser console
-  window.marsExplorer = { viewer, openPlace, flyTo, net, byId };
+  window.marsExplorer = {
+    viewer, openPlace, flyTo, net, byId,
+    // used by the Ancient Mars time machine (js/ancient.js)
+    goHome, closeCard, closePanels, isSheetLayout,
+    imagery: { baseLayer, colorLayer, ctxLayer, hiriseLayer, heightLayer },
+    setPinsHidden(v) { pinsHidden = !!v; if (pinsHidden) selected = null; scene.requestRender(); }
+  };
+  window.dispatchEvent(new Event("mars-ready"));
   scene.requestRender();
 })();

@@ -76,6 +76,16 @@ Each point is stored as `[longitude, latitude, sol]`. To update, ask a tech-savv
 
 ---
 
+## Ancient Mars time machine
+
+The "Ancient Mars" button under the title opens a timeline of 7 stops, from Mars' birth 4.5 billion years ago to today. Students drag the timeline (or tap Next) and the globe changes: oceans, lakes, rivers, floods, clouds and ice.
+
+- **The water is placed with NASA's MOLA elevation map**, so it fills the low ground the way real water would. The biggest ocean is filled to an ancient shoreline height (3,550 m below Mars' average level). It covers 19.3% of Mars and holds about 19 million km³ of water, close to NASA's 2015 estimate (19% of the surface, about 20 million km³).
+- **Lakes:** Hellas (−5,800 m, a proposed ancient shoreline), Jezero, Gale and the Eridania sea, filled as high as today's terrain allows.
+- **River lines** show where water would flow downhill across the old cratered highlands. **Flood lines** are traced downhill from the sources of Kasei, Maja and Ares Valles.
+- Story text, pictures and settings: `js/data/ancient.js`. Code: `js/ancient.js`, `css/ancient.css`. Data: `assets/ancient/`.
+- **To turn it off:** delete the lines in `index.html` that load `css/ancient.css`, `js/data/ancient.js` and `js/ancient.js`. Nothing else changes.
+
 ## Video links: please preview before class
 
 The rovers, landers and the most popular places have one hand-picked video ("Watch the video"). Every other place has a "Find videos" button that opens a regular YouTube search for that place, so students can scroll the results. Please watch the hand-picked videos before class, and remember that YouTube search results change over time.
